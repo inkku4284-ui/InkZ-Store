@@ -11,7 +11,9 @@
     "start": "next start --hostname 0.0.0.0",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:server": "tsx --conditions=react-server --test tests/server/*.test.ts",
+    "stripe:verify": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/verify-stripe.ts"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",
@@ -20,6 +22,8 @@
     "next": "16.4.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
+    "server-only": "0.0.1",
+    "stripe": "23.0.0",
     "three": "0.186.1"
   },
   "devDependencies": {
@@ -33,6 +37,7 @@
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.1",
     "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
     "typescript": "6.0.3"
   }
 }

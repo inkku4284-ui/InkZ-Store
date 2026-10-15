@@ -374,4 +374,11 @@ details[open] .faq-plus::after { transform:rotate(0); }
   .contact-layout h2 { font-size:30px; }
 }
 @media(max-width:359px) { .header-label { display:none; } .hero-location { display:none; } .hero-actions { gap:18px; } .hero-actions .plain-link { font-size:10px; } .button { font-size:11px; } .footer-cta { font-size:26px; } }
+.sandbox-panel { max-width:900px; padding-block:40px 80px; }
+.sandbox-panel h2 { font-family:var(--font-display); font-size:clamp(30px,5vw,58px); line-height:1.1; margin-block:28px; }
+.sandbox-panel p { max-width:66ch; margin-block:24px; line-height:1.8; }
+.sandbox-panel .text-link { display:flex; width:fit-content; margin-top:24px; }
+.sandbox-button { margin-top:12px; min-height:48px; white-space:normal; text-align:left; }
+.sandbox-button:disabled { opacity:.65; cursor:not-allowed; }
+.sandbox-feedback { color:var(--bone); }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } *,*::before,*::after { transition:none!important; animation:none!important; } .faq-list details::details-content { transition:none!important; } }

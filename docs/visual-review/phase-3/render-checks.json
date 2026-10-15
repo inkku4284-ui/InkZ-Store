@@ -1,0 +1,67 @@
+{
+  "capturedAt": "2026-10-15T14:45:37.686Z",
+  "mode": "Actual local production build; Stripe unconfigured, no hosted payment tested",
+  "results": [
+    {
+      "name": "desktop-sandbox",
+      "path": "/sandbox/checkout",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "overflow": false,
+      "disabledButtons": [
+        "TEST MODE — Checkout unavailable"
+      ]
+    },
+    {
+      "name": "mobile-sandbox",
+      "path": "/sandbox/checkout",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "overflow": false,
+      "disabledButtons": [
+        "TEST MODE — Checkout unavailable"
+      ]
+    },
+    {
+      "name": "checkout-return",
+      "path": "/sandbox/checkout/success?payment_status=paid",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "overflow": false,
+      "disabledButtons": []
+    },
+    {
+      "name": "checkout-cancel",
+      "path": "/sandbox/checkout/cancel",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": 200,
+      "overflow": false,
+      "disabledButtons": []
+    },
+    {
+      "name": "product-prelaunch",
+      "path": "/products/combat-framework",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "status": 200,
+      "overflow": false,
+      "disabledButtons": [
+        "Purchasing unavailable"
+      ]
+    }
+  ]
+}
