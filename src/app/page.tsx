@@ -17,7 +17,7 @@ export default function Home() {
       <div className="hero-top"><SectionLabel number="001">Independent software</SectionLabel><span className="mono hero-location">Roblox Studio / Luau</span></div>
       <h1 id="hero-heading" className="hero-title" aria-label="BUILD WHAT MATTERS."><span className="hero-line"><span>BUILD WHAT</span></span><span className="hero-line"><span>MATTERS.<span className="hero-period" aria-hidden="true"><Arrow diagonal/></span></span></span></h1>
       <HeroArtifact/>
-      <div className="hero-bottom"><span className="hero-brand-note mono">Original systems.<br/>Independent by design.</span><div className="hero-copy"><p>Independent Roblox frameworks for developers who want control over their systems.</p><div className="hero-actions"><Link href="/products" className="button button-bone">Explore Catalog<Arrow diagonal/></Link><Link href="/docs" className="plain-link">Documentation<Arrow/></Link></div></div></div>
+      <div className="hero-bottom"><span className="hero-brand-note mono">Original systems.<br/>Independent by design.</span><div className="hero-copy"><p>An independent Roblox software label.<br/>Original systems. Built to be modified.</p><div className="hero-actions"><Link href="/products" className="button button-bone">Explore Catalog<Arrow diagonal/></Link><Link href="/docs" className="plain-link">Documentation<Arrow/></Link></div></div></div>
       <div className="hero-baseline mono"><span>Built to be modified.</span><a href="#selected">Explore the system <span aria-hidden="true">↓</span></a></div>
     </section>
 

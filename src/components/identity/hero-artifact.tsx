@@ -26,7 +26,14 @@ export function HeroArtifact() {
     let cancelled = false;
     const network = navigator as Navigator & { connection?: { saveData?: boolean } };
     if (network.connection?.saveData) return;
-    const timer = window.setTimeout(() => {
+    let timer = 0;
+    let started = false;
+    let observer: IntersectionObserver | undefined;
+    const load = () => {
+      if (started || cancelled) return;
+      started = true;
+      observer?.disconnect();
+      timer = window.setTimeout(() => {
       void import("./artifact-scene").then(({mountArtifact}) => {
         if (cancelled) return;
         try {
@@ -42,8 +49,14 @@ export function HeroArtifact() {
           target.replaceChildren();
         }
       }).catch(() => { /* The same designed poster remains if the chunk cannot load. */ });
-    }, 180);
+      }, 180);
+    };
+    if (typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(entries => { if (entries.some(entry => entry.isIntersecting)) load(); }, {rootMargin:"100px"});
+      observer.observe(target);
+    } else load();
     return () => {
+      observer?.disconnect();
       cancelled = true;
       window.clearTimeout(timer);
       controller.current?.dispose();

@@ -14,9 +14,9 @@ export function HomeMotion() {
         const element = entry.target as HTMLElement;
         const order = Number(element.dataset.reveal || 0);
         animations.push(element.animate([
-          { opacity: 0, transform: "translateY(24px)" },
+          { opacity: 0.35, transform: "translateY(16px)" },
           { opacity: 1, transform: "translateY(0)" },
-        ], { duration: 700, delay: order * 75, easing: "cubic-bezier(.16,1,.3,1)", fill: "backwards" }));
+        ], { duration: 480, delay: order * 60, easing: "cubic-bezier(.22,1,.36,1)", fill: "backwards" }));
         observer.unobserve(element);
       });
     }, { threshold: 0.08 });

@@ -28,11 +28,13 @@ The homepage’s original **Fracture / Form—01** insignia is actual Three.js g
 
 Editorial text and the SVG render on the server. The WebGL module is dynamically imported after the initial content renders. All geometry, studio reflections, and materials are local; there are no external models, HDR images, trackers, or rendering services. Standard physically based materials and a small procedural reflection map keep the scene focused.
 
-The idle loop is capped at 30 fps on fine-pointer devices and 20 fps on coarse-pointer devices. Pixel ratio is capped at 1.5 and 1 respectively. Rendering suspends offscreen and in background tabs; a visible pause control stops movement. Reduced-motion and data-saving preferences retain the static poster without initializing WebGL. Live reduced-motion changes, context loss, component teardown, and unavailable WebGL restore the poster and dispose scene resources. Touch inspection preserves vertical page scrolling.
+Rendering is capped at 30 fps on fine-pointer devices and 20 fps on coarse-pointer devices. After a finite settling phase, GPU draws stop until inspection or another relevant event. Time-based damping returns the artifact to a precise neutral view. Pixel ratio is capped at 1.5 and 1 respectively. Rendering suspends offscreen and in background tabs; a visible pause control stops movement. Reduced-motion and data-saving preferences retain the static poster without initializing WebGL. Live reduced-motion changes, context loss, component teardown, and unavailable WebGL restore the poster and dispose scene resources. Touch inspection preserves vertical page scrolling.
 
 Arrival uses a finite CSS typography sequence; selected editorial elements reveal once through the Web Animations API. All content stays readable without animation. The product’s keyboard-accessible diagram explorer explains conceptual stages without implying verified product functionality. Motion controls and diagram selections remain in memory only.
 
 See [rendered screenshots, a browser recording, and validation notes](./docs/visual-review/README.md) for the Phase II review.
+
+The [Phase II.5 polish review](./docs/visual-review/phase-2-5/README.md) includes the audit, before/after captures, viewport matrix, and current validation. Automatic Vercel deployment is disabled for `feat/inkz-polish` so the polish pass stays review-only until explicitly approved. For future real product footage, configure `media` in `src/lib/products.ts` with approved public footage and captions; the component currently renders nothing. Never publish paid framework source or archives as media.
 
 ## Browser checks
 
