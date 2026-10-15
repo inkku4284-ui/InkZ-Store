@@ -29,3 +29,7 @@ The development website can run independently of these tasks. **Stripe submissio
 - [ ] Enable purchasing only when the product, business authority, payment approval, pricing, license, refund policy, support, and delivery workflow are ready.
 
 Current facts: INKZ is a pre-launch independent software label based in Thailand. Combat Framework targets Roblox Studio and Luau. Pricing is planned in USD; the amount is pending. Secure digital download after verified payment is planned and not implemented. No license rights, refund terms, release date, support email, legal operator, governing jurisdiction, delivery guarantee, or support commitment is confirmed. No live deployment has been verified by local development checks.
+
+## Separate Phase III Sandbox
+
+The optional, explicitly gated Stripe Sandbox flow simulates payments only. It does not resolve any live-launch prerequisite above. See [STRIPE_SANDBOX.md](./STRIPE_SANDBOX.md) for exact Price verification, manual Dashboard steps, and volatile storage limits. No digital delivery is implemented.

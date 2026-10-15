@@ -1,6 +1,6 @@
 # INKZ®
 
-The public website for an independent software label making Roblox development tools. Next.js App Router, strict TypeScript, Tailwind CSS, and self-hosted Space Grotesk, Inter, and IBM Plex Mono. No payment infrastructure or paid framework source is included.
+The public website for an independent software label making Roblox development tools. Next.js App Router, strict TypeScript, Tailwind CSS, and self-hosted Space Grotesk, Inter, and IBM Plex Mono. A separately gated Stripe Sandbox integration is included. No live payments, fulfillment, or paid framework source is included.
 
 ## Development
 
@@ -66,7 +66,7 @@ Confirmed owner information: business country Thailand; business type Independen
 2. Configure the real public HTTPS origin as `NEXT_PUBLIC_SITE_URL` in Vercel’s environment settings and redeploy. The value must be an origin, e.g. your verified domain with no path, query, or credentials. Never commit secret values. When the variable is omitted, Vercel’s `VERCEL_PROJECT_PRODUCTION_URL` is used if present.
 3. Verify the public deployment: all routes, navigation, policy links, HTTPS, mobile layout, `/opengraph-image`, `/robots.txt`, and `/sitemap.xml`. Canonical and sitemap URLs are emitted only when a public origin is configured; local builds without an origin have no canonical URL and may warn about the social-image base URL.
 4. Review provider logs, data retention, recipients, and privacy disclosures for the actual hosting configuration. The app includes no analytics or tracking cookies; do not assume that describes infrastructure logging.
-5. Complete the launch checklist before Stripe submission. Keep checkout disabled until every commercial, product, payment, and delivery requirement is verified.
+5. Complete the launch checklist before Stripe submission. Keep live checkout disabled until every commercial, product, payment, and delivery requirement is verified; Sandbox testing is separately gated.
 
 No deployment is performed by this repository’s setup. A working public site does not establish Stripe approval. Vercel preview deployment and publication are separate from a local production build.
 
@@ -80,4 +80,8 @@ The purchase state is intentionally disabled in code. A product or a visible pri
 4. Private artifact storage, authenticated or expiring download links, authorization checks, and an auditable delivery process. Never expose paid source in `public/` or this repository.
 5. Tests for invalid signatures, duplicated/out-of-order events, failed payments, unauthorized access, expired links, and refunds.
 
-Keep Stripe secret keys and webhook secrets in secure server-side deployment settings only. Do not add payment secrets now; no current workflow needs them. Verify age/country requirements and authorized adult involvement before live onboarding or acceptance of funds.
+Keep Stripe secret keys and webhook secrets in secure server-side deployment settings only. Use Sandbox credentials only for the optional test workflow; never configure live credentials in this phase. Verify age/country requirements and authorized adult involvement before live onboarding or acceptance of funds.
+
+## Stripe Sandbox (Phase III)
+
+See [STRIPE_SANDBOX.md](./STRIPE_SANDBOX.md) for secure environment setup, Price verification, test cards, webhook forwarding, Vercel Preview configuration, and storage limitations. `/sandbox/checkout` is clearly labelled TEST MODE; the production purchase button remains disabled. Run `npm run test:server` for payment security checks.
