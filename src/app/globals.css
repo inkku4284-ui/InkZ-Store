@@ -165,6 +165,17 @@ details[open] .faq-plus::after { transform:rotate(0); }
 .product-layout { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:64px; padding-block:64px 80px; }
 .product-main { min-width:0; }
 .product-main>.system-figure { background:var(--bone); padding:28px; }
+.concept-diagram { background:var(--bone); color:var(--void); }
+.concept-diagram .system-figure { padding:28px; }
+.concept-explorer { padding:0 28px 28px; }
+.concept-explorer>.mono { color:#615e59; font-size:8px; }
+.concept-controls { display:flex; gap:8px; margin-block:16px; }
+.concept-controls button { display:flex; gap:14px; align-items:center; min-height:44px; background:none; border:1px solid #b8b5ae; padding:10px 16px; font-size:11px; transition:background 180ms, color 180ms; }
+.concept-controls button .mono { font-size:8px; }
+.concept-controls button[aria-pressed="true"] { background:var(--void); border-color:var(--void); color:var(--bone); }
+.concept-description { min-height:60px; font-size:11px; line-height:1.8; color:#55524d; max-width:620px; }
+.concept-diagram .diagram-intent,.concept-diagram .diagram-rules,.concept-diagram .diagram-state { stroke:#605d57; transition:fill 200ms, stroke 200ms; }
+.concept-diagram[data-stage="intent"] .diagram-intent,.concept-diagram[data-stage="rules"] .diagram-rules,.concept-diagram[data-stage="state"] .diagram-state { stroke:#9a3934; fill:#d8cdc1; stroke-width:2; }
 .product-main .system-figure svg { max-height:400px; }
 .article-section { padding:38px 0; border-bottom:1px solid var(--steel); scroll-margin-top:24px; }
 .article-section:first-child { padding-top:0; }
@@ -312,6 +323,11 @@ details[open] .faq-plus::after { transform:rotate(0); }
   .purchase-panel { position:static; order:-1; padding:24px; }
   .purchase-panel h2 { margin-top:20px; }
   .product-main>.system-figure { padding:18px 12px; }
+  .concept-diagram .system-figure { padding:18px 12px; }
+  .concept-explorer { padding:0 16px 22px; }
+  .concept-controls { gap:6px; }
+  .concept-controls button { gap:8px; padding:10px 12px; font-size:10px; }
+  .concept-description { min-height:80px; }
   .article-section { padding-block:30px; }
   .article-section h2 { font-size:27px; }
   .article-section p,.article-section li { font-size:12px; }

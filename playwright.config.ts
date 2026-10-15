@@ -14,11 +14,13 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:3000",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
-    launchOptions: executablePath ? { executablePath } : {},
+    // Headless cloud machines use Chromium's software WebGL backend. This is
+    // test-runner configuration only; production browsers choose their own GPU.
+    launchOptions: { ...(executablePath ? { executablePath } : {}), args:["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] },
   },
   projects: [
     { name:"desktop", use:{...devices["Desktop Chrome"], viewport:{width:1440,height:1000}} },
     { name:"mobile", use:{...devices["iPhone 13"], defaultBrowserType:"chromium"} },
   ],
-  webServer: { command:"npm run start", url:"http://127.0.0.1:3000", reuseExistingServer: !process.env.CI, timeout:30_000 },
+  webServer: { command:"npm run start", url:"http://127.0.0.1:3000", reuseExistingServer: false, timeout:30_000 },
 });

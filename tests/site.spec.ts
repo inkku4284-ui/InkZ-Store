@@ -94,6 +94,7 @@ test("bundled assets load without third-party requests or tracking storage", asy
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
   expect(await page.evaluate(() => document.fonts.check('600 16px "Space Grotesk"'))).toBe(true);
+  await expect(page.locator(".hero-artifact")).toHaveAttribute("data-renderer", "webgl", {timeout:20_000});
   expect(await page.evaluate(() => localStorage.length)).toBe(0);
   expect(await page.context().cookies()).toEqual([]);
   expect(external).toEqual([]);
