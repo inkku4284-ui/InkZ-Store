@@ -1,6 +1,8 @@
 /** Public business facts only. Null means unconfirmed, never invent a substitute. */
 export const business = {
   name: "INKZ®",
+  type: "Independent Software Label / Digital Software Products",
+  businessCountry: "Thailand",
   description: "Independent Roblox frameworks for developers who want control over their systems.",
   supportEmail: null as string | null,
   legalOperator: null as string | null,
@@ -31,10 +33,10 @@ export const navigation = [
 ];
 
 export const launchRequirements = [
-  "Confirm the legal operator, business jurisdiction, and legally required public business details without disclosing unnecessary personal information.",
+  "Confirm the legal operator with the owner and parent/guardian, the applicable legal jurisdiction, and legally required public business details. The confirmed business country is Thailand.",
   "Provide and verify a working public support email and define support scope and response expectations.",
   "Supply and review the actual product source, architecture, supported features, installation steps, compatibility, and technical limitations.",
-  "Finalize pricing, currency, applicable taxes, license rights, delivery terms, update policy, and a refund process that respects applicable consumer law.",
+  "Finalize the planned USD pricing, applicable taxes, license rights, secure download delivery terms, update policy, and a refund process that respects applicable consumer law.",
   "Verify Stripe’s applicable age, country, account, and representative requirements, including authorized adult involvement; complete onboarding and confirm live-payment eligibility.",
   "Implement and test server-side Checkout Sessions, signed webhooks, order records, and secure, expiring fulfillment before enabling purchases.",
   "Set the real production URL, verify the deployment and support channel, and review hosting data processing and all published policies.",

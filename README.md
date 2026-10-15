@@ -44,6 +44,8 @@ Use `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to select another Chromium binary. CI uses 
 
 **Not ready for Stripe submission or live sales.** See [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). There is no contact form, email placeholder, fake checkout, invented API, analytics, or sales claim. Update the policies whenever actual business practices or data processing change.
 
+Confirmed owner information: business country Thailand; business type Independent Software Label / Digital Software Products. Combat Framework pricing is planned in USD, with no confirmed amount. Secure digital download after verified payment is planned and not implemented. Legal operator confirmation with the owner and parent/guardian, a verified support email, license rights, and refund terms remain pending.
+
 ## Deploy to Vercel
 
 1. Push this project to GitHub, then import the repository into Vercel as a Next.js project. The project root is this directory, with `npm ci` and `npm run build`; use Node.js 24.

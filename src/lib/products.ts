@@ -7,6 +7,8 @@ export type Product = {
   language: string;
   availability: "Not launched";
   price: null;
+  plannedCurrency: string;
+  plannedDelivery: string;
   description: string;
 };
 
@@ -19,6 +21,8 @@ export const combat: Product = {
   language: "Luau",
   availability: "Not launched",
   price: null,
+  plannedCurrency: "USD",
+  plannedDelivery: "Secure digital download after verified payment is planned, but not implemented. Delivery timing and final terms remain pending.",
   description: "A combat framework planned for Roblox developers. Technical specifications, source review, and release details are still being finalized.",
 };
 
