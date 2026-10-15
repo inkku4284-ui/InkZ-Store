@@ -1,3 +1,10 @@
+export type ProductMediaAsset = {
+  src: string;
+  poster?: string;
+  caption: string;
+  captionsSrc: string;
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -10,6 +17,7 @@ export type Product = {
   plannedCurrency: string;
   plannedDelivery: string;
   description: string;
+  media: ProductMediaAsset | null;
 };
 
 export const combat: Product = {
@@ -24,6 +32,7 @@ export const combat: Product = {
   plannedCurrency: "USD",
   plannedDelivery: "Secure digital download after verified payment is planned, but not implemented. Delivery timing and final terms remain pending.",
   description: "A combat framework planned for Roblox developers. Technical specifications, source review, and release details are still being finalized.",
+  media: null,
 };
 
 export const products: readonly Product[] = [combat];

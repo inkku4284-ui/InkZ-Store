@@ -12,6 +12,7 @@ const stages = [
 export function ConceptDiagram() {
   const [active, setActive] = useState(0);
   return <div className="concept-diagram" data-stage={stages[active].id}>
+    <div className="concept-heading mono"><span>CF—001 / Interaction study</span><span>Conceptual</span></div>
     <SystemDiagram/>
     <div className="concept-explorer"><p className="mono">Explore the idea / not a product demonstration</p><div className="concept-controls" role="group" aria-label="Conceptual interaction stages">{stages.map((stage,index) => <button key={stage.id} type="button" aria-pressed={active === index} aria-controls="concept-description" onClick={() => setActive(index)}><span className="mono">0{index+1}</span>{stage.label}</button>)}</div><p id="concept-description" className="concept-description" aria-live="polite">{stages[active].copy}</p></div>
   </div>;

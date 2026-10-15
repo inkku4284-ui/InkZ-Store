@@ -1,0 +1,54 @@
+{
+  "browser": "Chromium software WebGL 2",
+  "viewports": [
+    {
+      "width": 320,
+      "overflow": false,
+      "headlineClipped": false
+    },
+    {
+      "width": 375,
+      "overflow": false,
+      "headlineClipped": false
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "headlineClipped": false
+    },
+    {
+      "width": 430,
+      "overflow": false,
+      "headlineClipped": false
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "headlineClipped": false
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "headlineClipped": false
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "headlineClipped": false
+    },
+    {
+      "width": 1920,
+      "overflow": false,
+      "headlineClipped": false
+    }
+  ],
+  "focus": {
+    "outline": "rgb(11, 11, 12)",
+    "height": 44
+  },
+  "mobilePauseHeight": 44,
+  "shortMobileCtaBottom": 655.984375,
+  "shortViewportHeight": 664,
+  "touchScroll": 129,
+  "consoleAndPageErrors": []
+}
