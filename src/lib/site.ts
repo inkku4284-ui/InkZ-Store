@@ -27,8 +27,8 @@ function publicOrigin(): string | undefined {
 
 export const siteUrl = publicOrigin();
 export const navigation = [
-  { href: "/products", label: "Catalog" },
-  { href: "/docs", label: "Documentation" },
+  { href: "/products", label: "Products" },
+  { href: "/docs", label: "Docs" },
   { href: "/contact", label: "Contact" },
 ];
 
