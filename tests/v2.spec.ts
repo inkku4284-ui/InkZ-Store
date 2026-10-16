@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { gunzipSync } from "node:zlib";
 import AxeBuilder from "@axe-core/playwright";
 
 test("the catalog searches real product data and recovers from an empty selection", async ({page}) => {
@@ -15,7 +16,7 @@ test("the catalog searches real product data and recovers from an empty selectio
   await search.fill("Luau");
   await expect(page.locator(".product-card")).toHaveCount(1);
   await search.fill("nothing");
-  expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa"]).analyze()).violations).toEqual([]);
+  expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze()).violations).toEqual([]);
 });
 
 test("product presentation does not overlap navigation or pretend a demo exists", async ({page}) => {
@@ -34,6 +35,13 @@ test("THE RINGS is loaded as a measured named GLB model", async ({page,request})
   const bytes=await response.body();
   expect(bytes.readUInt32LE(0)).toBe(0x46546c67);
   expect(bytes.length).toBeLessThan(1_500_000);
+  const studio=await request.get("/models/inkz-studio.bin.gz");
+  expect(studio.status()).toBe(200);
+  const environment=gunzipSync(await studio.body());
+  expect(environment.length).toBe(688144);
+  expect(environment.toString("ascii",0,4)).toBe("INKZ");
+  expect(environment.readUInt32LE(8)).toBe(336);
+  expect(environment.readUInt32LE(12)).toBe(256);
   await page.goto("/");
   const host=page.locator(".artifact-webgl");
   await expect(host).toHaveAttribute("data-load","ready",{timeout:20_000});
@@ -43,8 +51,8 @@ test("THE RINGS is loaded as a measured named GLB model", async ({page,request})
   expect(Number(await host.getAttribute("data-triangles"))).toBeLessThan(100000);
 });
 
-test("a failed GLB request restores the genuine model poster and useful navigation", async ({page}) => {
-  await page.route("**/models/inkz-rings.glb",route=>route.fulfill({status:404,body:"Unavailable"}));
+for (const asset of ["inkz-rings.glb","inkz-studio.bin.gz"]) test(`a failed ${asset} request restores the genuine model poster and useful navigation`, async ({page}) => {
+  await page.route(`**/models/${asset}`,route=>route.fulfill({status:404,body:"Unavailable"}));
   await page.goto("/");
   await expect(page.locator(".artifact-webgl")).toHaveAttribute("data-load","failed",{timeout:20_000});
   await expect(page.locator(".hero-artifact")).toHaveAttribute("data-renderer","static");

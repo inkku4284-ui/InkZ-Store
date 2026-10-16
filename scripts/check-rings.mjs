@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { gzipSync } from "node:zlib";
+import { gunzipSync, gzipSync } from "node:zlib";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { Mesh } from "three";
 const bytes = readFileSync(new URL("../public/models/inkz-rings.glb", import.meta.url));
@@ -12,4 +12,9 @@ for (const name of ["INKZ_Core","Ring_Primary","Ring_Secondary","Ring_Tertiary",
 let triangles=0,meshes=0;
 scene.traverse(object => { if (object instanceof Mesh) { meshes++; triangles+=(object.geometry.index?.count ?? object.geometry.attributes.position.count)/3; } });
 if (triangles > 100000 || bytes.length > 1500000) throw new Error("Model exceeds its budget");
-console.log(JSON.stringify({ format:"glTF 2.0 / actual GLBLoader parse", bytes:bytes.length, gzip_estimate:gzipSync(bytes,{level:9}).length, triangles, meshes, independentlyNamedRings:3 },null,2));
+console.log(JSON.stringify({ format:"glTF 2.0 / actual GLTFLoader parse", bytes:bytes.length, gzip_estimate:gzipSync(bytes,{level:9}).length, triangles, meshes, independentlyNamedRings:3 },null,2));
+
+const studioBytes = readFileSync(new URL("../public/models/inkz-studio.bin.gz", import.meta.url));
+const studio = gunzipSync(studioBytes);
+if (studio.length !== 688144 || studio.toString("ascii",0,4) !== "INKZ" || studio.readUInt32LE(4) !== 1 || studio.readUInt32LE(8) !== 336 || studio.readUInt32LE(12) !== 256) throw new Error("Invalid prefiltered studio texture");
+console.log(JSON.stringify({studioGzipBytes:studioBytes.length,studioDecodedBytes:studio.length,width:336,height:256,runtimePMREMCapture:false}));

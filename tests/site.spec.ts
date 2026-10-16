@@ -15,7 +15,7 @@ for (const route of routes) {
     expect(await page.title()).toContain("INKZ");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
     expect(overflow).toBe(false);
-    const accessibility = await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa"]).analyze();
+    const accessibility = await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
     expect(accessibility.violations).toEqual([]);
     expect(errors).toEqual([]);
   });

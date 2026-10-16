@@ -301,6 +301,7 @@ details[open] .faq-plus::after { transform:rotate(0); }
 .sandbox-context>p { color:var(--muted); font-size:13px; max-width:480px; }
 .sandbox-context .notice { margin-top:28px; grid-template-columns:1fr; gap:12px; }
 .sandbox-context .notice-marker>span { display:none; }
+.sandbox-context>.text-link { display:flex; justify-content:space-between; border-bottom:1px solid var(--steel); margin-top:12px; }
 .state-wrap { padding-block:38px 64px; }
 .state-panel { display:grid; grid-template-columns:220px 1fr; border:1px solid var(--steel); background:var(--panel); }
 .state-code { padding:32px; color:var(--red-text); border-right:1px solid var(--steel); }

@@ -1,10 +1,9 @@
 import {
-  ACESFilmicToneMapping, AmbientLight, DirectionalLight, Group, Material,
-  Mesh, OrthographicCamera, PMREMGenerator, Quaternion, Scene, SRGBColorSpace,
+  ACESFilmicToneMapping, AmbientLight, CubeUVReflectionMapping, DataTexture, DirectionalLight, Group, HalfFloatType, LinearFilter, LinearSRGBColorSpace, Material,
+  Mesh, OrthographicCamera, Quaternion, RGBAFormat, Scene, SRGBColorSpace,
   Texture, Vector3, WebGLRenderer, type Object3D,
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 export type ArtifactController = { setPaused: (paused: boolean) => void; setInspected: (inspected: boolean) => void; dispose: () => void };
 type Options = { ready: () => void; unavailable: () => void; motion: (state: string) => void };
@@ -47,19 +46,15 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
   const camera = new OrthographicCamera(-2.6, 2.6, 2.6, -2.6, 0.1, 40);
   camera.position.set(3.4, 2.5, 7);
   camera.lookAt(0, 0, 0);
-  const room = new RoomEnvironment();
-  const pmrem = new PMREMGenerator(renderer);
-  const environment = pmrem.fromScene(room, 0.04, 0.1, 100, { size: 64 });
-  scene.environment = environment.texture;
+  let environment: DataTexture | null = null;
   scene.environmentIntensity = 1.25;
-  room.dispose(); pmrem.dispose();
   const key = new DirectionalLight(0xfff6ef, 4.5); key.position.set(-4, 5, 5);
   const rim = new DirectionalLight(0xe2e8ff, 4); rim.position.set(4, 2, -3);
   scene.add(key, rim, new AmbientLight(0xffffff, 0.12));
   const sculpture = new Group(); scene.add(sculpture);
   const abort = new AbortController();
   const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let disposed = false, paused = false, visible = true, ready = false;
+  let disposed = false, paused = false, visible = true, ready = false, prepared = false;
   let frame = 0, timer = 0, previousTime = 0, activeStart = 0, elapsed = 0, activeBeforeSuspend = 0;
   let pointerX = 0, pointerY = 0, rotationX = 0, rotationY = 0, inspectTarget = 0, inspectAmount = 0;
   let model: Object3D | null = null;
@@ -70,11 +65,11 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
   const tilt = new Quaternion(), spin = new Quaternion();
 
   function wake() {
-    if (!disposed && model && !frame && !timer && visible && !paused && !document.hidden) frame = requestAnimationFrame(render);
+    if (!disposed && model && prepared && !frame && !timer && visible && !paused && !document.hidden) frame = requestAnimationFrame(render);
   }
   function render(time: number) {
     frame = 0;
-    if (disposed || !model) return;
+    if (disposed || !model || !prepared) return;
     const running = visible && !paused && !document.hidden;
     const delta = previousTime ? Math.min((time - previousTime) / 1000, .08) : 0;
     previousTime = time;
@@ -113,7 +108,7 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     cancelAnimationFrame(frame); clearTimeout(timer); frame = 0; timer = 0;
     previousTime = 0; activeBeforeSuspend = elapsed; activeStart = 0;
     options.motion(paused ? "paused" : !visible || document.hidden ? "suspended" : "running");
-    if (!model || !visible || document.hidden || paused && ready && !force) return;
+    if (!model || !prepared || !visible || document.hidden || paused && ready && !force) return;
     frame = requestAnimationFrame(render);
   }
   function fail() { if (disposed) return; dispose(); host.dataset.load = "failed"; options.unavailable(); }
@@ -143,10 +138,24 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
 
   void (async () => {
     try {
-      const response = await fetch(MODEL, { signal:abort.signal, cache:"force-cache" });
-      if (!response.ok) throw new Error("Model unavailable");
-      const bytes = await response.arrayBuffer();
+      const [bytes, studio] = await Promise.all([MODEL,"/models/inkz-studio.bin.gz"].map(async url => {
+        const response = await fetch(url, { signal:abort.signal, cache:"force-cache" });
+        if (!response.ok) throw new Error("Model environment unavailable");
+        return url.endsWith(".gz")
+          ? new Response(response.body!.pipeThrough(new DecompressionStream("gzip"))).arrayBuffer()
+          : response.arrayBuffer();
+      }));
       if (disposed) return;
+      // Offline-prefiltered local RGBA16F CubeUV; no runtime PMREM capture.
+      if (studio.byteLength !== 688144) throw new Error("Invalid studio texture");
+      const header = new DataView(studio);
+      if (header.getUint32(0) !== 0x494e4b5a || header.getUint32(4,true) !== 1 || header.getUint32(8,true) !== 336 || header.getUint32(12,true) !== 256) throw new Error("Invalid studio header");
+      const pixels = new Uint16Array(336*256*4);
+      for (let i=0; i<pixels.length; i++) pixels[i] = header.getUint16(16+i*2,true);
+      environment = new DataTexture(pixels,336,256,RGBAFormat,HalfFloatType);
+      environment.mapping = CubeUVReflectionMapping; environment.colorSpace = LinearSRGBColorSpace;
+      environment.minFilter = LinearFilter; environment.magFilter = LinearFilter; environment.needsUpdate = true;
+      scene.environment = environment;
       const gltf = await new GLTFLoader().parseAsync(bytes, "/models/");
       if (disposed) { disposeModel(gltf.scene); return; }
       model = gltf.scene;
@@ -157,7 +166,10 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
       let triangles = 0;
       model.traverse(object => { if (object instanceof Mesh) triangles += (object.geometry.index?.count ?? object.geometry.attributes.position.count)/3; });
       host.dataset.model = MODEL; host.dataset.rings = String(rings.length); host.dataset.triangles = String(triangles);
-      sculpture.add(model); sync(true);
+      sculpture.add(model);
+      await renderer.compileAsync(scene,camera);
+      if (disposed) return;
+      prepared = true; sync(true);
     } catch { if (!disposed) fail(); }
   })();
   function dispose() {
@@ -169,7 +181,7 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     canvas.removeEventListener("webglcontextlost", contextLost); document.removeEventListener("visibilitychange", visibility);
     preference.removeEventListener("change", preferenceChanged);
     if (model) { sculpture.remove(model); disposeModel(model); model = null; }
-    rings = []; environment.dispose(); scene.clear(); renderer.dispose();
+    rings = []; environment?.dispose(); environment = null; scene.clear(); renderer.dispose();
     if (!renderer.getContext().isContextLost()) renderer.forceContextLoss();
     canvas.remove();
   }
