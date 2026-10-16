@@ -1,6 +1,6 @@
 # INKZ® V2 — Label Rework / Phase 01–02
 
-Status: implementation specification, not a claim that the GLB or UI is complete.
+Status (16 October 2026): frontend and real Blender/GLB implementation delivered for review. The missing named primary-reference comparison remains blocked. See the implementation record below; this is not owner visual approval.
 Branch: `rework/inkz-label-v2` (never merge/deploy without owner review).
 Brand rule: **INKZ IS LABEL.** Product-first software commerce; not an abstract AI-generated SaaS landing page.
 
@@ -70,3 +70,16 @@ Three.js integration:
 
 ## Codex task prompt (recommended GPT-6 High reasoning)
 Work only on branch `rework/inkz-label-v2` in `inkku4284-ui/InkZ-Store`. First read `AGENTS.md`, this specification, `README.md`, `src/app/page.tsx`, `src/app/globals.css`, `src/app/home-motion.css`, `src/components/identity/{hero-artifact,artifact-scene}.ts(x)`, `src/lib/{products,site}.ts`, and the installed Next.js docs. Produce a short file-level audit and exact change list before coding. Implement Phase 01 as a coherent token + layout redesign; preserve all commerce/legal/payment invariants and accessibility. Then implement Phase 02 with a REAL Blender-authored, optimized GLB and Three.js GLTFLoader, not an image plane or fake procedural stand-in. If asset authoring is blocked, report it explicitly and stop short of claiming Phase 02 complete. Work in small reviewable commits; run checks, capture screenshots and explain discrepancies against the approved INKZ THE RINGS reference. No production deployment or merge.
+
+
+## Implementation record — 16 October 2026
+
+- Audit: [all actual routes, exact scope and preserved invariants](./INKZ_V2_AUDIT.md). `design/references/` and `inkz-rings-main.png` were missing; reported before visual work. The visible task composite and written specification informed an original interpretation. Inspection/comparison against those named files is still blocked.
+- One authoritative black/chrome/bone/deep-red token system; rebuilt shared navigation/footer/components and every existing public content, documentation, policy and Sandbox route. No new products, prices, proof, contacts, accounts, cart or fulfillment were invented.
+- Real Blender 4.3.2 source, optimized GLB, independent named ring nodes and matching 192-sample Cycles poster: [asset record](../assets/source/README.md). Measured GLB 588,224 bytes / 32,304 triangles / 15 meshes / zero model textures. Separate locally baked studio lighting removes runtime PMREM capture/blur; model shaders prepare before first reveal. The source, exporter and environment bake are reproducible and licenses are documented.
+- Pointer, Inspect/Reset, Pause/Resume, finite rendering, visibility suspension, reduced-motion/Save-Data, failure fallback, keyboard/touch and resource disposal are implemented and exercised in real WebGL. The independent glTF viewer verifies the export separately from the Next.js app.
+- [Actual rendered evidence, full route matrix, browser recording, performance observations and exact verification](./visual-review/v2/README.md). All 11 public routes plus 404 are captured at desktop/mobile; the six-width, 12-route matrix has no overflow. Tests retain all payment security assertions and extend discovery, empty, GLB/environment failure and lifecycle coverage.
+- Review through [Draft PR #5](https://github.com/inkku4284-ui/InkZ-Store/pull/5), on `rework/inkz-label-v2` against `main`. Preview and CI state are linked there. No merge or Production deployment is authorized/performed.
+- `paymentsEnabled: false`, original product data, API routes and Stripe/security implementation are preserved. Actual Sandbox Price/card/webhook verification remains unperformed without safe credentials; do not claim a successful Stripe simulation or durable fulfillment.
+
+Remaining owner gates: compare against the missing primary/reference set when available; review real-device motion and the complete preview; verify business/product/legal/media details separately before any future launch. These do not silently turn the interpretive model into an approved reference match or open purchases.
