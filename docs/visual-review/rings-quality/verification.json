@@ -1,0 +1,24 @@
+{
+  "application_commit": "3f50af0b7d3d90515433477db57f615c5bc9e65f",
+  "branch": "rework/inkz-label-v2",
+  "browser": {
+    "passed": 77,
+    "skipped": 1,
+    "failed": 0,
+    "workers": 2,
+    "duration_minutes": 5.0
+  },
+  "server": {
+    "passed": 45,
+    "skipped": 0,
+    "failed": 0
+  },
+  "checks": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "production_build": "passed",
+    "actual_gltf_pbr_studio_checker": "passed"
+  },
+  "preservation": "Only src/components/identity/artifact-poster.tsx and artifact-scene.ts differ from f704585 within src. All other application source is unchanged.",
+  "evidence": "Actual local production-build Chromium/SwiftShader captures and Blender source render; no deployed-browser or physical-device claim."
+}

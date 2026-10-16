@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-const output=fileURLToPath(new URL("../docs/visual-review/v2/",import.meta.url));
+const output=process.env.INKZ_REVIEW_OUTPUT || fileURLToPath(new URL("../docs/visual-review/v2/",import.meta.url));
 mkdirSync(output,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || (existsSync("/usr/bin/chromium")?"/usr/bin/chromium":undefined),args:["--use-angle=swiftshader","--enable-unsafe-swiftshader"]});
 try {

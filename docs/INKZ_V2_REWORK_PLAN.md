@@ -1,6 +1,6 @@
 # INKZ® V2 — Label Rework / Phase 01–02
 
-Status (16 October 2026): frontend and real Blender/GLB implementation delivered for review. The missing named primary-reference comparison remains blocked. See the implementation record below; this is not owner visual approval.
+Status (16 October 2026): frontend delivered for review; THE RINGS quality overhaul now uses the subsequently attached approved primary image. See the latest quality record below; the earlier reference limitation describes the prototype. See the implementation record below; this is not owner visual approval.
 Branch: `rework/inkz-label-v2` (never merge/deploy without owner review).
 Brand rule: **INKZ IS LABEL.** Product-first software commerce; not an abstract AI-generated SaaS landing page.
 
@@ -83,3 +83,12 @@ Work only on branch `rework/inkz-label-v2` in `inkku4284-ui/InkZ-Store`. First r
 - `paymentsEnabled: false`, original product data, API routes and Stripe/security implementation are preserved. Actual Sandbox Price/card/webhook verification remains unperformed without safe credentials; do not claim a successful Stripe simulation or durable fulfillment.
 
 Remaining owner gates: compare against the missing primary/reference set when available; review real-device motion and the complete preview; verify business/product/legal/media details separately before any future launch. These do not silently turn the interpretive model into an approved reference match or open purchases.
+
+
+## THE RINGS quality overhaul — subsequent owner request
+
+Scope is strictly the sculpture/materials/studio, motion reliability and asset lifecycle. The approved Hero typography, layout, navigation and CTA are preserved byte-for-byte; business/product/payment code remains untouched. The approved primary image is now visible in the task and was inspected. Named files in `design/references/` remain absent; that no longer blocks comparing the supplied primary concept.
+
+Flat washers are replaced by original Blender-authored cylindrical, chamfered hoops: titanium panel seams, polished rails, recessed grooves/housings, flush fasteners, embedded red inserts, a surface-following solid INKZ inlay and an original band inscription. A real PBR roughness map exports in the GLB. The dark seven-card studio and a core reflection probe are prefiltered offline. No bloom, runtime PMREM or reflection capture is introduced.
+
+The model remains below the original 1.5 MB / 100k-triangle budgets. Inspect/reset damping now follows wall time on slow devices; pause, reduced motion, lazy loading, failure fallback, zero draws at rest and resource cleanup remain explicit. Newly introduced decoded PBR images close exactly once on unmount. [Current source / reproduction](../assets/source/README.md), [matching-camera comparison and QA evidence](./visual-review/rings-quality/README.md). This supersedes the old prototype measurements and primary-image availability statement, not the preserved historical V2 test evidence. Owner visual approval and physical-device profiling remain outstanding.

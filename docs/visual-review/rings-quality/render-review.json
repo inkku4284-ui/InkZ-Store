@@ -1,0 +1,88 @@
+{
+  "source": "Local Next.js production build; actual GLB, no concept-image substitution",
+  "browser": "154.0.8037.57",
+  "views": [
+    {
+      "view": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "model": {
+        "load": "ready",
+        "model": "/models/inkz-rings.glb",
+        "rings": "3",
+        "triangles": "41436",
+        "assembly": "closed",
+        "activity": "resting"
+      },
+      "horizontalOverflow": false,
+      "performance": {
+        "indexedDrawCalls": 270,
+        "frameClears": 9,
+        "firstClearMs": 2045.7000000029802,
+        "drawsDuring300msAtRest": 0,
+        "assets": [
+          {
+            "name": "/models/inkz-rings.glb",
+            "encodedBytes": 294608,
+            "durationMs": 34.30000001192093
+          },
+          {
+            "name": "/models/inkz-studio.bin.gz",
+            "encodedBytes": 69929,
+            "durationMs": 7.100000008940697
+          },
+          {
+            "name": "/models/inkz-core-studio.bin.gz",
+            "encodedBytes": 353784,
+            "durationMs": 9.200000002980232
+          }
+        ],
+        "note": "Single local software-WebGL observation; not a hardware-device benchmark."
+      },
+      "errors": []
+    },
+    {
+      "view": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "model": {
+        "load": "ready",
+        "model": "/models/inkz-rings.glb",
+        "rings": "3",
+        "triangles": "41436",
+        "assembly": "closed",
+        "activity": "resting"
+      },
+      "horizontalOverflow": false,
+      "performance": {
+        "indexedDrawCalls": 300,
+        "frameClears": 10,
+        "firstClearMs": 1439.7000000029802,
+        "drawsDuring300msAtRest": 0,
+        "assets": [
+          {
+            "name": "/models/inkz-rings.glb",
+            "encodedBytes": 294608,
+            "durationMs": 190.3999999910593
+          },
+          {
+            "name": "/models/inkz-studio.bin.gz",
+            "encodedBytes": 69929,
+            "durationMs": 30
+          },
+          {
+            "name": "/models/inkz-core-studio.bin.gz",
+            "encodedBytes": 353784,
+            "durationMs": 38.8999999910593
+          }
+        ],
+        "note": "Single local software-WebGL observation; not a hardware-device benchmark."
+      },
+      "errors": []
+    }
+  ]
+}
