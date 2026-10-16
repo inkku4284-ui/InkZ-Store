@@ -179,6 +179,10 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
       const gltf = await new GLTFLoader().parseAsync(bytes, "/models/");
       if (disposed) { disposeModel(gltf.scene); return; }
       model = gltf.scene;
+      const titanium = model.getObjectByName("Primary_Titanium_Panels");
+      // GLTFLoader may resolve a model after a texture decode failure. Keep
+      // the genuine poster rather than reveal a flat, incomplete material.
+      if (!(titanium instanceof Mesh) || !(titanium.material instanceof MeshStandardMaterial) || !titanium.material.roughnessMap?.image) throw new Error("Missing machining material");
       const core = model.getObjectByName("INKZ_Core");
       const namedRings = RING_NAMES.map(name => model!.getObjectByName(name));
       if (!(core instanceof Mesh) || namedRings.some(ring => !(ring instanceof Mesh))) throw new Error("Invalid model structure");

@@ -96,18 +96,40 @@ test("brand colors and all existing public routes retain their release boundarie
 
 
 test("embedded PBR images close once when the sculpture unmounts", async ({page}) => {
+  test.setTimeout(60_000);
   await page.addInitScript(() => {
-    const metrics=window as unknown as {inkzClosedImages:number};
-    metrics.inkzClosedImages=0;
+    const metrics=window as unknown as {inkzClosedImages:number;inkzDecodedImages:number};
+    metrics.inkzClosedImages=0;metrics.inkzDecodedImages=0;
+    const decode=window.createImageBitmap.bind(window);
+    window.createImageBitmap=(async (...args:unknown[])=>{
+      const image:ImageBitmap=await Reflect.apply(decode,window,args);
+      metrics.inkzDecodedImages++;return image;
+    }) as typeof createImageBitmap;
     const close=ImageBitmap.prototype.close;
     ImageBitmap.prototype.close=function(){metrics.inkzClosedImages++;return close.call(this);};
   });
   await page.goto("/");
   await expect(page.locator(".artifact-webgl")).toHaveAttribute("data-load","ready",{timeout:20_000});
+  expect(await page.evaluate(()=>(window as unknown as {inkzDecodedImages:number}).inkzDecodedImages)).toBe(1);
   await page.getByRole("link",{name:"Browse products",exact:true}).click();
-  await expect.poll(()=>page.evaluate(()=>(window as unknown as {inkzClosedImages:number}).inkzClosedImages)).toBe(1);
+  await expect(page).toHaveURL(/\/products$/);
+  await expect(page.locator(".artifact-webgl canvas")).toHaveCount(0);
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {inkzClosedImages:number}).inkzClosedImages),{timeout:20_000}).toBe(1);
   await page.locator(".site-header").getByRole("link",{name:"INKZ home"}).click();
   await expect(page.locator(".artifact-webgl")).toHaveAttribute("data-load","ready",{timeout:20_000});
   await page.getByRole("link",{name:"Browse products",exact:true}).click();
-  await expect.poll(()=>page.evaluate(()=>(window as unknown as {inkzClosedImages:number}).inkzClosedImages)).toBe(2);
+  await expect(page).toHaveURL(/\/products$/);
+  await expect(page.locator(".artifact-webgl canvas")).toHaveCount(0);
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {inkzClosedImages:number}).inkzClosedImages),{timeout:20_000}).toBe(2);
+  expect(await page.evaluate(()=>(window as unknown as {inkzDecodedImages:number}).inkzDecodedImages)).toBe(2);
+});
+
+
+test("a failed PBR image decode retains the genuine rendered poster", async ({page}) => {
+  await page.addInitScript(()=>{window.createImageBitmap=()=>Promise.reject(new Error("Simulated image decode failure"));});
+  await page.goto("/");
+  await expect(page.locator(".artifact-webgl")).toHaveAttribute("data-load","failed",{timeout:20_000});
+  await expect(page.locator(".hero-artifact")).toHaveAttribute("data-renderer","static");
+  await expect(page.locator(".artifact-webgl canvas")).toHaveCount(0);
+  await expect(page.locator(".artifact-poster")).toHaveCSS("opacity","1");
 });
