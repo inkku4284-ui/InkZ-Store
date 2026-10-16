@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-10-16T05:10:01.727Z",
+  "source": "Actual local Next.js production build, Chromium software WebGL; not a device performance benchmark",
+  "results": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "errors": [],
+      "overflow": false
+    },
+    {
+      "name": "reduced-motion",
+      "canvasCount": 0,
+      "renderer": "static"
+    },
+    {
+      "name": "320px-live-controls",
+      "overflow": false
+    }
+  ]
+}
