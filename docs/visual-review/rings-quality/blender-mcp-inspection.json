@@ -1,0 +1,50 @@
+{
+  "blender": "4.3.2",
+  "background": false,
+  "source": "/workspace/InkZ-Store/assets/source/inkz-rings.blend",
+  "rings": {
+    "Ring_Primary": {
+      "axial_width": 0.4,
+      "quaternion": [
+        0.9193,
+        0.2616,
+        -0.2941,
+        0.0
+      ],
+      "children": 7
+    },
+    "Ring_Secondary": {
+      "axial_width": 0.32,
+      "quaternion": [
+        0.8247,
+        -0.0472,
+        0.5637,
+        0.0
+      ],
+      "children": 6
+    },
+    "Ring_Tertiary": {
+      "axial_width": 0.29,
+      "quaternion": [
+        0.4263,
+        0.7356,
+        0.5265,
+        -0.0
+      ],
+      "children": 6
+    }
+  },
+  "mesh_objects": 30,
+  "light_objects": 7,
+  "mark_vertices": 70,
+  "machining_image": [
+    512,
+    128
+  ],
+  "camera_position": [
+    3.4000000953674316,
+    -7.0,
+    2.5
+  ],
+  "camera_vertical_extent": 4.900000095367432
+}

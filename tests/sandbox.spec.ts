@@ -8,7 +8,7 @@ for (const path of ["/sandbox/checkout", "/sandbox/checkout/success", "/sandbox/
     await expect(page.getByText("TEST MODE", { exact: true })).toBeVisible();
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    expect((await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze()).violations).toEqual([]);
+    expect((await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze()).violations).toEqual([]);
   });
 }
 test("unconfigured sandbox is closed and production control remains disabled", async ({ page, request }) => {

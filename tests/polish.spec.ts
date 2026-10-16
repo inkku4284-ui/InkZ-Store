@@ -11,7 +11,7 @@ test("the scene stops GPU draws at rest and returns exactly to neutral", async (
       metrics.inkzDraws++;
       return original.apply(this, args);
     };
-    // Extruded plates are non-indexed; indexed draws alone only count the room.
+    // Count indexed GLB meshes and any non-indexed procedural studio draws.
     const arrays = WebGL2RenderingContext.prototype.drawArrays;
     WebGL2RenderingContext.prototype.drawArrays = function(...args: Parameters<typeof arrays>) {
       metrics.inkzDraws++;
@@ -34,7 +34,7 @@ test("the scene stops GPU draws at rest and returns exactly to neutral", async (
   await expect.poll(count).toBeGreaterThan(stopped);
   await page.mouse.move(0,0);
   await expect(host).toHaveAttribute("data-activity", "resting");
-  expect(await host.locator("canvas").screenshot()).toEqual(neutral);
+  expect((await host.locator("canvas").screenshot()).equals(neutral)).toBe(true);
 });
 
 test("critical homepage content is readable with JavaScript disabled", async ({browser,page}) => {
@@ -42,11 +42,11 @@ test("critical homepage content is readable with JavaScript disabled", async ({b
   try {
     const noJs = await context.newPage();
     await noJs.goto("http://127.0.0.1:3000");
-    await expect(noJs.getByRole("heading",{name:"BUILD WHAT MATTERS."})).toBeVisible();
-    await expect(noJs.locator(".hero-copy")).toContainText("An independent Roblox software label.");
+    await expect(noJs.getByRole("heading",{name:"TOOLS FOR THE ONES WHO BUILD."})).toBeVisible();
+    await expect(noJs.locator(".hero-copy")).toContainText("Original software for Roblox creators.");
     await expect(noJs.locator(".hero-copy")).toHaveCSS("opacity","1");
     await expect(noJs.locator(".artifact-poster")).toBeVisible();
-    await noJs.getByRole("link",{name:"Explore Catalog",exact:true}).click();
+    await noJs.getByRole("link",{name:"Browse products",exact:true}).click();
     await expect(noJs).toHaveURL(/\/products$/);
   } finally { await context.close(); }
 });
@@ -60,7 +60,7 @@ test("product certainty, selected focus, and real-media omission remain explicit
   const selected = page.getByRole("button",{name:"01 Intent"});
   await selected.focus();
   await expect(selected).toHaveCSS("outline-style","solid");
-  await expect(selected).toHaveCSS("outline-color","rgb(11, 11, 12)");
+  await expect(selected).toHaveCSS("outline-color","rgb(10, 10, 11)");
   expect((await selected.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   await expect(page.locator("video,iframe")).toHaveCount(0);
   await expect(page.getByRole("button",{name:"Purchasing unavailable"})).toBeDisabled();
@@ -76,7 +76,7 @@ test("required viewport matrix has unclipped headings, usable controls and no ov
       expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), `${route} at ${width}`).toBe(false);
       if (route === "/") {
         expect(await page.locator(".hero-line").evaluateAll(lines => lines.every(line => line.scrollWidth <= line.clientWidth + 1)), `Headline at ${width}`).toBe(true);
-        const cta = await page.getByRole("link",{name:"Explore Catalog",exact:true}).boundingBox();
+        const cta = await page.getByRole("link",{name:"Browse products",exact:true}).boundingBox();
         expect(cta!.height).toBeGreaterThanOrEqual(44);
         expect(cta!.x + cta!.width).toBeLessThanOrEqual(width);
       }

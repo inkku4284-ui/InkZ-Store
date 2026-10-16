@@ -52,8 +52,8 @@ test("unavailable WebGL leaves the full hero and catalog usable", async ({page})
   await expect(page.locator("html")).toHaveAttribute("data-webgl-attempted", "true", {timeout:20_000});
   await expect(page.locator(".hero-artifact")).toHaveAttribute("data-renderer", "static");
   await expect(page.locator(".artifact-poster")).toBeVisible();
-  await expect(page.getByRole("heading", {name:"BUILD WHAT MATTERS."})).toBeVisible();
-  await page.getByRole("link", {name:"Explore Catalog", exact:true}).click();
+  await expect(page.getByRole("heading", {name:"TOOLS FOR THE ONES WHO BUILD."})).toBeVisible();
+  await page.getByRole("link", {name:"Browse products", exact:true}).click();
   await expect(page).toHaveURL(/\/products$/);
   await expect(page.getByRole("heading", {name:"Combat Framework"})).toBeVisible();
 });

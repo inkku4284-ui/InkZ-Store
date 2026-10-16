@@ -15,7 +15,7 @@ for (const route of routes) {
     expect(await page.title()).toContain("INKZ");
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
     expect(overflow).toBe(false);
-    const accessibility = await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa"]).analyze();
+    const accessibility = await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze();
     expect(accessibility.violations).toEqual([]);
     expect(errors).toEqual([]);
   });
@@ -55,12 +55,12 @@ test("mobile navigation supports keyboard, Escape, and route changes", async ({p
   await page.keyboard.press("Enter");
   await expect(toggle).toHaveAttribute("aria-expanded","true");
   await page.keyboard.press("Tab");
-  await expect(navigation.getByRole("link",{name:"Catalog"})).toBeFocused();
+  await expect(navigation.getByRole("link",{name:"Products"})).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(toggle).toBeFocused();
   await expect(navigation).not.toBeVisible();
   await toggle.click();
-  await navigation.getByRole("link",{name:"Catalog"}).click();
+  await navigation.getByRole("link",{name:"Products"}).click();
   await expect(page).toHaveURL(/\/products$/);
   await expect(navigation).not.toBeVisible();
   await expect(page.getByRole("button",{name:"Menu +"})).toHaveAttribute("aria-expanded","false");

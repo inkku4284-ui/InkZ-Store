@@ -1,0 +1,198 @@
+{
+  "tool": "Lighthouse 13.5.0",
+  "environment": "Local Next.js production server; system Chromium; SwiftShader software WebGL; provided/unthrottled network and CPU; independent browser runs, not a phone/device benchmark or statistical claim.",
+  "observations": [
+    {
+      "phase": "initial",
+      "device": "desktop",
+      "time": "2026-10-16T07:55:04.580Z",
+      "scores": {
+        "performance": 67,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first-contentful-paint": 939.324,
+        "largest-contentful-paint": 939.324,
+        "total-blocking-time": 1676.3970000000004,
+        "cumulative-layout-shift": 0.0007528592505393838,
+        "speed-index": 1172,
+        "total-byte-weight": 798797
+      },
+      "labelContentNameMismatchScore": 0,
+      "warnings": [],
+      "settings": {
+        "formFactor": "desktop",
+        "throttlingMethod": "provided",
+        "screenEmulation": {
+          "mobile": false,
+          "width": 1350,
+          "height": 940,
+          "deviceScaleFactor": 1,
+          "disabled": false
+        }
+      }
+    },
+    {
+      "phase": "initial",
+      "device": "mobile",
+      "time": "2026-10-16T07:55:28.319Z",
+      "scores": {
+        "performance": 77,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first-contentful-paint": 982.842,
+        "largest-contentful-paint": 982.842,
+        "total-blocking-time": 1145.645,
+        "cumulative-layout-shift": 0.00131199047434134,
+        "speed-index": 1145,
+        "total-byte-weight": 778887
+      },
+      "labelContentNameMismatchScore": 0,
+      "warnings": [],
+      "settings": {
+        "formFactor": "mobile",
+        "throttlingMethod": "provided",
+        "screenEmulation": {
+          "mobile": true,
+          "width": 412,
+          "height": 823,
+          "deviceScaleFactor": 1.75,
+          "disabled": false
+        }
+      }
+    },
+    {
+      "phase": "prefiltered-studio",
+      "device": "desktop",
+      "time": "2026-10-16T08:06:36.115Z",
+      "scores": {
+        "performance": 86,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first-contentful-paint": 442.053,
+        "largest-contentful-paint": 442.053,
+        "total-blocking-time": 337.41600000000005,
+        "cumulative-layout-shift": 0.0007528592505393838,
+        "speed-index": 586,
+        "total-byte-weight": 911874
+      },
+      "labelContentNameMismatchScore": 0,
+      "warnings": [],
+      "settings": {
+        "formFactor": "desktop",
+        "throttlingMethod": "provided",
+        "screenEmulation": {
+          "mobile": false,
+          "width": 1350,
+          "height": 940,
+          "deviceScaleFactor": 1,
+          "disabled": false
+        }
+      }
+    },
+    {
+      "phase": "prefiltered-studio",
+      "device": "mobile",
+      "time": "2026-10-16T08:06:57.670Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first-contentful-paint": 333.851,
+        "largest-contentful-paint": 414.928,
+        "total-blocking-time": 32.15999999999997,
+        "cumulative-layout-shift": 0.00131199047434134,
+        "speed-index": 471,
+        "total-byte-weight": 891962
+      },
+      "labelContentNameMismatchScore": 0,
+      "warnings": [],
+      "settings": {
+        "formFactor": "mobile",
+        "throttlingMethod": "provided",
+        "screenEmulation": {
+          "mobile": true,
+          "width": 412,
+          "height": 823,
+          "deviceScaleFactor": 1.75,
+          "disabled": false
+        }
+      }
+    },
+    {
+      "phase": "final-native-labels",
+      "device": "desktop",
+      "time": "2026-10-16T08:12:29.012Z",
+      "scores": {
+        "performance": 70,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first-contentful-paint": 867.781,
+        "largest-contentful-paint": 867.781,
+        "total-blocking-time": 940.46,
+        "cumulative-layout-shift": 0.0007671799299554734,
+        "speed-index": 1095,
+        "total-byte-weight": 911920
+      },
+      "labelContentNameMismatchScore": 1,
+      "warnings": [],
+      "settings": {
+        "formFactor": "desktop",
+        "throttlingMethod": "provided",
+        "screenEmulation": {
+          "mobile": false,
+          "width": 1350,
+          "height": 940,
+          "deviceScaleFactor": 1,
+          "disabled": false
+        }
+      }
+    },
+    {
+      "phase": "final-native-labels",
+      "device": "mobile",
+      "time": "2026-10-16T08:12:53.258Z",
+      "scores": {
+        "performance": 94,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first-contentful-paint": 991.759,
+        "largest-contentful-paint": 991.759,
+        "total-blocking-time": 290.8359999999999,
+        "cumulative-layout-shift": 0.0009949166835173115,
+        "speed-index": 1196,
+        "total-byte-weight": 892004
+      },
+      "labelContentNameMismatchScore": 1,
+      "warnings": [],
+      "settings": {
+        "formFactor": "mobile",
+        "throttlingMethod": "provided",
+        "screenEmulation": {
+          "mobile": true,
+          "width": 412,
+          "height": 823,
+          "deviceScaleFactor": 1.75,
+          "disabled": false
+        }
+      }
+    }
+  ]
+}

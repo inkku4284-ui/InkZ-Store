@@ -2,7 +2,7 @@ import Link from "next/link";
 import { combat } from "@/lib/products";
 
 const questions = [
-  ["Can I buy a framework yet?", <>Not yet. Combat Framework has not launched. Pricing, payment processing, and delivery are still being finalized. The site does not accept payments.</>],
+  ["Can I buy a framework yet?", <>Not yet. Combat Framework has not launched. Pricing, payment processing, and delivery are still being finalized. The public store does not accept live payments. Optional Sandbox testing is separate and unlocks no product.</>],
   ["What does the license allow?", <>License rights are not yet finalized. Commercial use, project limits, team access, redistribution, and modification rights must be published before sales open. See <Link href="/terms">terms & licensing</Link>.</>],
   ["How will the software be delivered?", <>{combat.plannedDelivery} The delivery process will be documented and tested before purchasing is enabled.</>],
   ["Will it work with my Roblox project?", <>Roblox Studio and Luau are the target platform and language. Specific versions, dependencies, rig types, and integration requirements have not been verified. Read the <Link href="/docs#compatibility">compatibility notes</Link> before making plans around the framework.</>],

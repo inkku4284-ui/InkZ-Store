@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -10,25 +9,13 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const button = useRef<HTMLButtonElement>(null);
-
   useEffect(() => {
     if (!open) return;
-    const onEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") { setOpen(false); button.current?.focus(); }
-    };
-    const media = window.matchMedia("(min-width: 768px)");
-    const onDesktop = () => { if (media.matches) setOpen(false); };
-    document.addEventListener("keydown", onEscape);
-    media.addEventListener("change", onDesktop);
-    return () => { document.removeEventListener("keydown", onEscape); media.removeEventListener("change", onDesktop); };
+    const escape = (event: KeyboardEvent) => { if (event.key === "Escape") { setOpen(false); button.current?.focus(); } };
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const resize = () => { if (desktop.matches) setOpen(false); };
+    document.addEventListener("keydown", escape); desktop.addEventListener("change", resize);
+    return () => { document.removeEventListener("keydown", escape); desktop.removeEventListener("change", resize); };
   }, [open]);
-
-  return <header className="site-header shell">
-    <Link href="/" className="wordmark" aria-label="INKZ home" onClick={() => setOpen(false)}>INKZ<span>®</span></Link>
-    <span className="header-label mono">Independent software.<br/>Uncompromised potential.</span><span className="header-status mono"><span aria-hidden="true"/> Pre-launch / In development</span>
-    <button ref={button} type="button" className="menu-toggle mono" aria-expanded={open} aria-controls="main-nav" onClick={() => setOpen(!open)}>{open ? "Close −" : "Menu +"}</button>
-    <nav id="main-nav" aria-label="Main navigation" className={`main-nav ${open ? "is-open" : ""}`}>
-      {navigation.map(({href, label}) => <Link key={href} href={href} aria-current={pathname === href || pathname.startsWith(`${href}/`) ? "page" : undefined} onClick={() => setOpen(false)}><span className="nav-index mono" aria-hidden="true">0{navigation.findIndex(item => item.href === href) + 1}</span><span>{label}</span><Arrow diagonal /></Link>)}
-    </nav>
-  </header>;
+  return <header className="site-header shell"><Link href="/" className="wordmark" aria-label="INKZ home" onClick={() => setOpen(false)}>INKZ<span>®</span></Link><span className="header-label mono">Independent<br/>software label</span><button ref={button} className="menu-toggle mono" type="button" aria-expanded={open} aria-controls="main-nav" onClick={() => setOpen(!open)}>{open ? "Close −" : "Menu +"}</button><nav id="main-nav" aria-label="Main navigation" className={`main-nav ${open ? "is-open" : ""}`}>{navigation.map(({href,label}, index) => <Link key={href} href={href} aria-current={pathname === href || pathname.startsWith(`${href}/`) ? "page" : undefined} onClick={() => setOpen(false)}><span className="nav-index mono" aria-hidden="true">0{index + 1}</span>{label}<Arrow diagonal/></Link>)}<span className="nav-release mono"><span aria-hidden="true"/>Pre-launch</span></nav></header>;
 }
