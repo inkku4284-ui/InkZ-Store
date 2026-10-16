@@ -1,6 +1,6 @@
 import {
   ACESFilmicToneMapping, AmbientLight, CubeUVReflectionMapping, DataTexture, DirectionalLight, Group, HalfFloatType, LinearFilter, LinearSRGBColorSpace, Material,
-  Mesh, OrthographicCamera, Quaternion, RGBAFormat, Scene, SRGBColorSpace,
+  Mesh, MeshStandardMaterial, OrthographicCamera, Quaternion, RGBAFormat, Scene, SRGBColorSpace,
   Texture, Vector3, WebGLRenderer, type Object3D,
 } from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -10,22 +10,44 @@ type Options = { ready: () => void; unavailable: () => void; motion: (state: str
 const MODEL = "/models/inkz-rings.glb";
 const RING_NAMES = ["Ring_Primary", "Ring_Secondary", "Ring_Tertiary"] as const;
 
-function disposeModel(model: Object3D) {
+function disposeModel(model: Object3D, retainedMaterials: Iterable<Material> = []) {
   const geometries = new Set<Mesh["geometry"]>();
-  const materials = new Set<Material>();
+  const materials = new Set<Material>(retainedMaterials);
   const textures = new Set<Texture>();
   model.traverse(object => {
     if (!(object instanceof Mesh)) return;
     geometries.add(object.geometry);
     for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
       materials.add(material);
-      for (const value of Object.values(material)) if (value instanceof Texture) textures.add(value);
+      // Studio/probe envMaps are owned separately by mountArtifact.
+      for (const [key,value] of Object.entries(material)) if (key !== "envMap" && value instanceof Texture) textures.add(value);
     }
   });
   geometries.forEach(geometry => geometry.dispose());
-  textures.forEach(texture => texture.dispose());
+  const bitmaps = new Set<ImageBitmap>();
+  textures.forEach(texture => {
+    const image = texture.source.data;
+    if (typeof ImageBitmap !== "undefined" && image instanceof ImageBitmap) bitmaps.add(image);
+    texture.dispose();
+  });
+  // GLTFLoader's decoded ImageBitmaps are not released by Texture.dispose().
+  // Shared metal/roughness maps can reference the same bitmap; close it once.
+  bitmaps.forEach(bitmap => bitmap.close());
   materials.forEach(material => material.dispose());
   model.clear();
+}
+
+
+function decodeStudio(bytes: ArrayBuffer, width: number, height: number) {
+  if (bytes.byteLength !== 16+width*height*8) throw new Error("Invalid studio texture");
+  const header = new DataView(bytes);
+  if (header.getUint32(0) !== 0x494e4b5a || header.getUint32(4,true) !== 1 || header.getUint32(8,true) !== width || header.getUint32(12,true) !== height) throw new Error("Invalid studio header");
+  const pixels = new Uint16Array(width*height*4);
+  for (let i=0; i<pixels.length; i++) pixels[i] = header.getUint16(16+i*2,true);
+  const texture = new DataTexture(pixels,width,height,RGBAFormat,HalfFloatType);
+  texture.mapping = CubeUVReflectionMapping; texture.colorSpace = LinearSRGBColorSpace;
+  texture.minFilter = LinearFilter; texture.magFilter = LinearFilter; texture.needsUpdate = true;
+  return texture;
 }
 
 /** Loads the actual Blender-authored GLB; the poster never acts as model geometry. */
@@ -46,11 +68,12 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
   const camera = new OrthographicCamera(-2.6, 2.6, 2.6, -2.6, 0.1, 40);
   camera.position.set(3.4, 2.5, 7);
   camera.lookAt(0, 0, 0);
-  let environment: DataTexture | null = null;
-  scene.environmentIntensity = 1.25;
-  const key = new DirectionalLight(0xfff6ef, 4.5); key.position.set(-4, 5, 5);
-  const rim = new DirectionalLight(0xe2e8ff, 4); rim.position.set(4, 2, -3);
-  scene.add(key, rim, new AmbientLight(0xffffff, 0.12));
+  let environment: DataTexture | null = null, coreEnvironment: DataTexture | null = null;
+  let sourceCoreMaterial: Material | null = null;
+  scene.environmentIntensity = 1;
+  const key = new DirectionalLight(0xfff6ef, 1.6); key.position.set(-4, 5, 5);
+  const rim = new DirectionalLight(0xe2e8ff, 1.4); rim.position.set(4, 2, -3);
+  scene.add(key, rim, new AmbientLight(0xffffff, 0.025));
   const sculpture = new Group(); scene.add(sculpture);
   const abort = new AbortController();
   const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -71,7 +94,10 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     frame = 0;
     if (disposed || !model || !prepared) return;
     const running = visible && !paused && !document.hidden;
-    const delta = previousTime ? Math.min((time - previousTime) / 1000, .08) : 0;
+    // Exponential damping is stable for any elapsed time. Capping this delta
+    // made inspection/reset slow down on devices that miss frames. sync()
+    // already resets previousTime when suspending, pausing or resizing.
+    const delta = previousTime ? (time - previousTime) / 1000 : 0;
     previousTime = time;
     if (running) {
       if (!activeStart) activeStart = time;
@@ -88,9 +114,9 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     rings.forEach(({object, quaternion, position}, index) => {
       // Each named ring has an independent axis, phase and inspection position.
       const opening = inspectAmount * [0.38,-0.5,0.32][index];
-      const angle = Math.sin(elapsed * [.8,-.63,.95][index] + index) * .18 * settling + opening;
+      const angle = Math.sin(elapsed * [.35,-.28,.41][index] + index) * .10 * settling + opening;
       object.quaternion.copy(quaternion).multiply(tilt.setFromAxisAngle(index === 1 ? axisY : axisX, angle));
-      object.quaternion.multiply(spin.setFromAxisAngle(axisZ, (index-1) * .3 * settling + inspectAmount * .12 * (index+1)));
+      object.quaternion.multiply(spin.setFromAxisAngle(axisZ, (index-1) * .12 * settling + inspectAmount * .12 * (index+1)));
       object.position.copy(position);
       object.position.x += inspectAmount * [-.16,.22,.08][index];
       object.position.y += inspectAmount * [.2,-.18,.12][index];
@@ -138,8 +164,8 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
 
   void (async () => {
     try {
-      const [bytes, studio] = await Promise.all([MODEL,"/models/inkz-studio.bin.gz"].map(async url => {
-        const response = await fetch(url, { signal:abort.signal, cache:"force-cache" });
+      const [bytes, studio, coreStudio] = await Promise.all([MODEL,"/models/inkz-studio.bin.gz","/models/inkz-core-studio.bin.gz"].map(async url => {
+        const response = await fetch(url, { signal:abort.signal, cache:"default" });
         if (!response.ok) throw new Error("Model environment unavailable");
         return url.endsWith(".gz")
           ? new Response(response.body!.pipeThrough(new DecompressionStream("gzip"))).arrayBuffer()
@@ -147,14 +173,8 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
       }));
       if (disposed) return;
       // Offline-prefiltered local RGBA16F CubeUV; no runtime PMREM capture.
-      if (studio.byteLength !== 688144) throw new Error("Invalid studio texture");
-      const header = new DataView(studio);
-      if (header.getUint32(0) !== 0x494e4b5a || header.getUint32(4,true) !== 1 || header.getUint32(8,true) !== 336 || header.getUint32(12,true) !== 256) throw new Error("Invalid studio header");
-      const pixels = new Uint16Array(336*256*4);
-      for (let i=0; i<pixels.length; i++) pixels[i] = header.getUint16(16+i*2,true);
-      environment = new DataTexture(pixels,336,256,RGBAFormat,HalfFloatType);
-      environment.mapping = CubeUVReflectionMapping; environment.colorSpace = LinearSRGBColorSpace;
-      environment.minFilter = LinearFilter; environment.magFilter = LinearFilter; environment.needsUpdate = true;
+      environment = decodeStudio(studio,384,512);
+      coreEnvironment = decodeStudio(coreStudio,336,256);
       scene.environment = environment;
       const gltf = await new GLTFLoader().parseAsync(bytes, "/models/");
       if (disposed) { disposeModel(gltf.scene); return; }
@@ -162,9 +182,21 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
       const core = model.getObjectByName("INKZ_Core");
       const namedRings = RING_NAMES.map(name => model!.getObjectByName(name));
       if (!(core instanceof Mesh) || namedRings.some(ring => !(ring instanceof Mesh))) throw new Error("Invalid model structure");
+      if (!(core.material instanceof MeshStandardMaterial)) throw new Error("Invalid core material");
+      sourceCoreMaterial = core.material;
+      core.material = core.material.clone();
+      core.material.envMap = coreEnvironment;
       rings = namedRings.map(object => ({ object:object!, quaternion:object!.quaternion.clone(), position:object!.position.clone() }));
       let triangles = 0;
-      model.traverse(object => { if (object instanceof Mesh) triangles += (object.geometry.index?.count ?? object.geometry.attributes.position.count)/3; });
+      model.traverse(object => {
+        if (!(object instanceof Mesh)) return;
+        triangles += (object.geometry.index?.count ?? object.geometry.attributes.position.count)/3;
+        // Cycles uses emission as a light source; realtime has no path-traced
+        // bounce. Keep the inserts red under ACES instead of clipping orange.
+        for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
+          if (material instanceof MeshStandardMaterial && material.name === "Embedded_Red") material.emissiveIntensity = 1.5;
+        }
+      });
       host.dataset.model = MODEL; host.dataset.rings = String(rings.length); host.dataset.triangles = String(triangles);
       sculpture.add(model);
       await renderer.compileAsync(scene,camera);
@@ -180,8 +212,8 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     host.removeEventListener("pointerup", release); host.removeEventListener("pointercancel", leave);
     canvas.removeEventListener("webglcontextlost", contextLost); document.removeEventListener("visibilitychange", visibility);
     preference.removeEventListener("change", preferenceChanged);
-    if (model) { sculpture.remove(model); disposeModel(model); model = null; }
-    rings = []; scene.environment = null; environment?.dispose(); environment = null; scene.clear(); renderer.dispose();
+    if (model) { sculpture.remove(model); disposeModel(model,sourceCoreMaterial ? [sourceCoreMaterial] : []); model = null; sourceCoreMaterial = null; }
+    rings = []; scene.environment = null; environment?.dispose(); environment = null; coreEnvironment?.dispose(); coreEnvironment = null; scene.clear(); renderer.dispose();
     if (!renderer.getContext().isContextLost()) renderer.forceContextLoss();
     canvas.remove();
   }

@@ -38,10 +38,10 @@ test("THE RINGS is loaded as a measured named GLB model", async ({page,request})
   const studio=await request.get("/models/inkz-studio.bin.gz");
   expect(studio.status()).toBe(200);
   const environment=gunzipSync(await studio.body());
-  expect(environment.length).toBe(688144);
+  expect(environment.length).toBe(1572880);
   expect(environment.toString("ascii",0,4)).toBe("INKZ");
-  expect(environment.readUInt32LE(8)).toBe(336);
-  expect(environment.readUInt32LE(12)).toBe(256);
+  expect(environment.readUInt32LE(8)).toBe(384);
+  expect(environment.readUInt32LE(12)).toBe(512);
   await page.goto("/");
   const host=page.locator(".artifact-webgl");
   await expect(host).toHaveAttribute("data-load","ready",{timeout:20_000});
@@ -51,7 +51,7 @@ test("THE RINGS is loaded as a measured named GLB model", async ({page,request})
   expect(Number(await host.getAttribute("data-triangles"))).toBeLessThan(100000);
 });
 
-for (const asset of ["inkz-rings.glb","inkz-studio.bin.gz"]) test(`a failed ${asset} request restores the genuine model poster and useful navigation`, async ({page}) => {
+for (const asset of ["inkz-rings.glb","inkz-studio.bin.gz","inkz-core-studio.bin.gz"]) test(`a failed ${asset} request restores the genuine model poster and useful navigation`, async ({page}) => {
   await page.route(`**/models/${asset}`,route=>route.fulfill({status:404,body:"Unavailable"}));
   await page.goto("/");
   await expect(page.locator(".artifact-webgl")).toHaveAttribute("data-load","failed",{timeout:20_000});
@@ -92,4 +92,22 @@ test("brand colors and all existing public routes retain their release boundarie
     await expect(page.locator(".policy-summary")).toBeVisible();
     await expect(page.getByRole("navigation",{name:"On this page"})).toBeVisible();
   }
+});
+
+
+test("embedded PBR images close once when the sculpture unmounts", async ({page}) => {
+  await page.addInitScript(() => {
+    const metrics=window as unknown as {inkzClosedImages:number};
+    metrics.inkzClosedImages=0;
+    const close=ImageBitmap.prototype.close;
+    ImageBitmap.prototype.close=function(){metrics.inkzClosedImages++;return close.call(this);};
+  });
+  await page.goto("/");
+  await expect(page.locator(".artifact-webgl")).toHaveAttribute("data-load","ready",{timeout:20_000});
+  await page.getByRole("link",{name:"Browse products",exact:true}).click();
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {inkzClosedImages:number}).inkzClosedImages)).toBe(1);
+  await page.locator(".site-header").getByRole("link",{name:"INKZ home"}).click();
+  await expect(page.locator(".artifact-webgl")).toHaveAttribute("data-load","ready",{timeout:20_000});
+  await page.getByRole("link",{name:"Browse products",exact:true}).click();
+  await expect.poll(()=>page.evaluate(()=>(window as unknown as {inkzClosedImages:number}).inkzClosedImages)).toBe(2);
 });

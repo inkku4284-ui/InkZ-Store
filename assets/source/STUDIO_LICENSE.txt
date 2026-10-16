@@ -1,5 +1,7 @@
-inkz-studio.bin is baked from Three.js 0.186.1 RoomEnvironment / PMREMGenerator.
-RoomEnvironment credits Google model-viewer EnvironmentScene as its basis.
+inkz-studio.bin.gz is an original INKZ seven-card studio prefiltered with
+Three.js 0.186.1 PMREMGenerator. The geometry/light-card arrangement is original;
+this edition does not use RoomEnvironment or a downloaded HDR.
+The following notice covers the Three.js tooling.
 
 The MIT License
 
