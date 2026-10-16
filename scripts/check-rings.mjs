@@ -38,5 +38,5 @@ console.log(JSON.stringify({studioGzipBytes:studioBytes.length,studioDecodedByte
 
 const coreProbeBytes=readFileSync(new URL("../public/models/inkz-core-studio.bin.gz",import.meta.url));
 const coreProbe=gunzipSync(coreProbeBytes);
-if(coreProbe.length!==688144 || coreProbe.toString("ascii",0,4)!=="INKZ" || coreProbe.readUInt32LE(4)!==1 || coreProbe.readUInt32LE(8)!==336 || coreProbe.readUInt32LE(12)!==256)throw new Error("Invalid core radiance probe");
-console.log(JSON.stringify({coreProbeGzipBytes:coreProbeBytes.length,coreProbeDecodedBytes:coreProbe.length,width:336,height:256,runtimeReflectionCapture:false}));
+if(coreProbe.length!==1572880 || coreProbe.toString("ascii",0,4)!=="INKZ" || coreProbe.readUInt32LE(4)!==1 || coreProbe.readUInt32LE(8)!==384 || coreProbe.readUInt32LE(12)!==512)throw new Error("Invalid core radiance probe");
+console.log(JSON.stringify({coreProbeGzipBytes:coreProbeBytes.length,coreProbeDecodedBytes:coreProbe.length,width:384,height:512,runtimeReflectionCapture:false}));

@@ -174,7 +174,7 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
       if (disposed) return;
       // Offline-prefiltered local RGBA16F CubeUV; no runtime PMREM capture.
       environment = decodeStudio(studio,384,512);
-      coreEnvironment = decodeStudio(coreStudio,336,256);
+      coreEnvironment = decodeStudio(coreStudio,384,512);
       scene.environment = environment;
       const gltf = await new GLTFLoader().parseAsync(bytes, "/models/");
       if (disposed) { disposeModel(gltf.scene); return; }

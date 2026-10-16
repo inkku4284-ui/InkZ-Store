@@ -40,7 +40,7 @@ model.traverse(o=>{if(o.isMesh&&o.material.name==='Embedded_Red')o.material.emis
 studio.environment=target.texture;studio.add(model);
 const key=new DirectionalLight(0xfff6ef,1.6);key.position.set(-4,5,5);
 const rim=new DirectionalLight(0xe2e8ff,1.4);rim.position.set(4,2,-3);studio.add(key,rim,new AmbientLight(0xffffff,.025));
-const probe=generator.fromScene(studio,0,.1,100,{size:64});
+const probe=generator.fromScene(studio,0,.1,100,{size:128});
 window.baked={base,core:await read(probe)};
 probe.dispose();target.dispose();studio.traverse(o=>{if(o.isMesh){o.geometry.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m.dispose();}});studio.clear();generator.dispose();renderer.dispose();renderer.forceContextLoss();
 `},bundle:true,format:"esm",write:false});
