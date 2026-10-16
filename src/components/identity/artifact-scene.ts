@@ -1,13 +1,13 @@
 import {
-  ACESFilmicToneMapping, AmbientLight, DirectionalLight, EdgesGeometry,
+  ACESFilmicToneMapping, AmbientLight, BoxGeometry, CylinderGeometry, DirectionalLight, EdgesGeometry,
   ExtrudeGeometry, Group, LineBasicMaterial, LineSegments, Mesh,
   MeshStandardMaterial, OrthographicCamera, Path, PMREMGenerator,
-  Scene, Shape, SRGBColorSpace, WebGLRenderer,
+  Scene, Shape, SRGBColorSpace, TorusGeometry, WebGLRenderer, type BufferGeometry,
 } from "three";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { core, plates, type Point } from "./insignia-shape";
 
-export type ArtifactController = { setPaused: (paused: boolean) => void; dispose: () => void };
+export type ArtifactController = { setPaused: (paused: boolean) => void; setInspected: (inspected: boolean) => void; dispose: () => void };
 type Options = { ready: () => void; unavailable: () => void; motion: (state: string) => void };
 
 function outline(points: readonly Point[], hole?: Point) {
@@ -26,10 +26,10 @@ function outline(points: readonly Point[], hole?: Point) {
 export function mountArtifact(host: HTMLElement, options: Options): ArtifactController {
   const coarse = window.matchMedia("(pointer: coarse)").matches;
   const renderer = new WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, coarse ? 1 : 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, coarse ? 1.25 : 1.5));
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMappingExposure = 0.95;
   renderer.setClearColor(0x000000, 0);
   const canvas = renderer.domElement;
   canvas.setAttribute("aria-hidden", "true");
@@ -37,7 +37,7 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
 
   const scene = new Scene();
   const camera = new OrthographicCamera(-3, 3, 3, -3, 0.1, 30);
-  camera.position.set(4.8, 1.8, 9.5);
+  camera.position.set(3.5, 2.1, 11);
   camera.lookAt(0, 0, 0);
 
   // Procedural studio reflections: no HDR downloads, textures, or model requests.
@@ -45,7 +45,7 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
   const pmrem = new PMREMGenerator(renderer);
   const environment = pmrem.fromScene(room, 0.04, 0.1, 100, { size: 64 });
   scene.environment = environment.texture;
-  scene.environmentIntensity = 0.85;
+  scene.environmentIntensity = 1.2;
   room.dispose();
   pmrem.dispose();
   const key = new DirectionalLight(0xf3f1eb, 4.5);
@@ -55,30 +55,72 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
   rim.position.set(4, 2, -3);
   scene.add(rim, new AmbientLight(0xeae7e0, 0.18));
 
-  const fronts = [0.32, 0.38, 0.29, 0.36, 0.33].map(roughness => new MeshStandardMaterial({ color: 0x757575, metalness: 0.82, roughness }));
-  const side = new MeshStandardMaterial({ color: 0x353535, metalness: 0.8, roughness: 0.42 });
-  const red = new MeshStandardMaterial({ color: 0x963a33, metalness: 0.5, roughness: 0.42 });
+  const fronts = [0.19, 0.24, 0.17, 0.21, 0.18].map(roughness => new MeshStandardMaterial({ color: 0xbfc5b9, metalness: 1, roughness }));
+  const side = new MeshStandardMaterial({ color: 0x353c32, metalness: 0.92, roughness: 0.28 });
+  const accent = new MeshStandardMaterial({ color: 0xc8ed69, metalness: 0.35, roughness: 0.35, emissive: 0x425813, emissiveIntensity: 0.25 });
   const backing = new MeshStandardMaterial({ color: 0x343434, metalness: 0.85, roughness: 0.45 });
   const edgeMaterial = new LineBasicMaterial({ color: 0xd5d9ce, transparent: true, opacity: 0.2 });
   const sculpture = new Group();
-  const geometries: (ExtrudeGeometry | EdgesGeometry)[] = [];
+  const geometries: BufferGeometry[] = [];
+  const assembly = new Group();
+  assembly.scale.setScalar(0.82);
+  sculpture.add(assembly);
+  const movablePlates: Mesh[] = [];
 
   function layer(points: readonly Point[], depth: number, z: number, material: MeshStandardMaterial | MeshStandardMaterial[], bevel: number, hole?: Point) {
     const geometry = new ExtrudeGeometry(outline(points, hole), { depth, bevelEnabled: true, bevelSegments: 2, steps: 1, bevelSize: bevel, bevelThickness: bevel, curveSegments: 12 });
     geometries.push(geometry);
     const mesh = new Mesh(geometry, material);
     mesh.position.z = z;
-    sculpture.add(mesh);
+    assembly.add(mesh);
     return mesh;
   }
-  layer(core, 0.16, -0.55, backing, 0.025);
-  layer(core, 0.12, -0.29, red, 0.018);
+  layer(core, 0.16, -0.62, backing, 0.025);
+  layer(core, 0.12, -0.3, accent, 0.018);
   plates.forEach((plate, index) => {
-    const mesh = layer(plate.points, 0.44, -0.16, [fronts[index], side], 0.028, plate.hole);
+    const mesh = layer(plate.points, 0.34, -0.1, [fronts[index], side], 0.028, plate.hole);
+    movablePlates.push(mesh);
     const edges = new EdgesGeometry(mesh.geometry, 35);
     geometries.push(edges);
     mesh.add(new LineSegments(edges, edgeMaterial));
   });
+  // A split orbital chassis, not a downloaded model or a product specification.
+  const chassis = new Group();
+  chassis.rotation.set(0.24, -0.16, 0.14);
+  const chrome = new MeshStandardMaterial({ color: 0xabb5a3, metalness: 1, roughness: 0.22 });
+  const graphite = new MeshStandardMaterial({ color: 0x242b22, metalness: 0.8, roughness: 0.28 });
+  function ring(radius: number, thickness: number, arc: number, material: MeshStandardMaterial, angle: number, z: number) {
+    const geometry = new TorusGeometry(radius, thickness, 8, coarse ? 60 : 96, arc);
+    geometries.push(geometry);
+    const mesh = new Mesh(geometry, material);
+    mesh.rotation.z = angle;
+    mesh.position.z = z;
+    chassis.add(mesh);
+  }
+  ring(2.05, 0.085, Math.PI * 1.64, chrome, 0.25, -0.28);
+  ring(2.18, 0.023, Math.PI * 1.3, graphite, -1.5, -0.42);
+  ring(1.94, 0.012, Math.PI * 0.48, accent, -0.78, -0.2);
+  ring(2.05, 0.085, Math.PI * 0.2, accent, -0.62, -0.28);
+  const boltGeometry = new CylinderGeometry(0.095, 0.095, 0.11, 12);
+  const slotGeometry = new BoxGeometry(0.105, 0.018, 0.012);
+  const braceGeometry = new BoxGeometry(0.19, 0.4, 0.16);
+  geometries.push(boltGeometry, slotGeometry, braceGeometry);
+  for (let index = 0; index < 4; index++) {
+    const angle = index * Math.PI / 2 + 0.45;
+    const x = Math.cos(angle) * 2.05;
+    const y = Math.sin(angle) * 2.05;
+    const brace = new Mesh(braceGeometry, graphite);
+    brace.position.set(x, y, -0.29);
+    brace.rotation.z = angle - Math.PI / 2;
+    const bolt = new Mesh(boltGeometry, chrome);
+    bolt.rotation.x = Math.PI / 2;
+    bolt.position.set(x, y, -0.16);
+    const slot = new Mesh(slotGeometry, graphite);
+    slot.position.set(x, y, -0.1);
+    slot.rotation.z = angle;
+    chassis.add(brace, bolt, slot);
+  }
+  sculpture.add(chassis);
   scene.add(sculpture);
 
   let disposed = false;
@@ -89,13 +131,17 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
   let lastFrame = 0;
   let elapsed = 0;
   let previousTime = 0;
+  let activeStart = 0;
+  let activeBeforeSuspend = 0;
   let pointerX = 0;
   let pointerY = 0;
   let rotationX = 0;
   let rotationY = 0;
   let ready = false;
+  let inspectTarget = 0;
+  let inspectAmount = 0;
   const frameInterval = 1000 / (coarse ? 20 : 30);
-  const idleDuration = 6;
+  const idleDuration = 4.2;
 
   function wake() {
     if (!disposed && !frame && !timer && visible && !paused && !document.hidden) frame = requestAnimationFrame(render);
@@ -109,15 +155,28 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     previousTime = time;
     lastFrame = time;
     if (running) {
-      elapsed += delta;
+      if (!activeStart) activeStart = time;
+      elapsed = activeBeforeSuspend + (time - activeStart) / 1000;
       const damping = 1 - Math.exp(-8 * delta);
       rotationX += (pointerY * 0.09 - rotationX) * damping;
       rotationY += (pointerX * 0.16 - rotationY) * damping;
+      inspectAmount += (inspectTarget - inspectAmount) * damping;
     }
-    const interpolating = Math.abs(rotationX - pointerY * 0.09) + Math.abs(rotationY - pointerX * 0.16) > 0.00015;
+    if (paused || Math.abs(inspectTarget - inspectAmount) < 0.00015) inspectAmount = inspectTarget;
+    const interpolating = Math.abs(inspectTarget - inspectAmount) > 0.00015 || Math.abs(rotationX - pointerY * 0.09) + Math.abs(rotationY - pointerX * 0.16) > 0.00015;
     if (running && !interpolating) { rotationX = pointerY * 0.09; rotationY = pointerX * 0.16; }
-    const settling = Math.pow(Math.max(0, 1 - elapsed / idleDuration), 2);
-    sculpture.rotation.set(rotationX + Math.sin(elapsed * 0.5) * 0.025 * settling, rotationY + Math.sin(elapsed * 0.4) * 0.065 * settling, -0.11);
+    const settling = Math.pow(Math.max(0, 1 - elapsed / idleDuration), 3);
+    const entrance = Math.max(inspectAmount, Math.pow(Math.max(0, 1 - elapsed / 2.6), 3));
+    movablePlates.forEach((mesh, index) => {
+      mesh.position.x = (index % 2 ? 0.45 : -0.45) * entrance;
+      mesh.position.y = (2 - index) * 0.12 * entrance;
+      mesh.position.z = -0.1 + (index + 1) * 0.16 * entrance;
+      mesh.rotation.y = (index % 2 ? 0.25 : -0.25) * entrance;
+    });
+    chassis.rotation.z = 0.14 + 0.35 * settling + inspectAmount * 0.25;
+    chassis.position.z = -inspectAmount * 0.5;
+    host.dataset.assembly = inspectAmount === 1 ? "open" : inspectAmount === 0 ? "closed" : "moving";
+    sculpture.rotation.set(rotationX + Math.sin(elapsed * 0.5) * 0.025 * settling, rotationY - 0.18 * settling, -0.16);
     try { renderer.render(scene, camera); }
     catch { dispose(); options.unavailable(); return; }
     if (!ready) { ready = true; options.ready(); }
@@ -135,6 +194,8 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     frame = 0;
     timer = 0;
     previousTime = 0;
+    activeBeforeSuspend = elapsed;
+    activeStart = 0;
     options.motion(paused ? "paused" : document.hidden || !visible ? "suspended" : "running");
     if (!visible || document.hidden || paused && ready && !force) return;
     frame = requestAnimationFrame(render);
@@ -143,7 +204,7 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     const width = host.clientWidth;
     const height = host.clientHeight;
     if (!width || !height || disposed) return;
-    const halfHeight = 2.5;
+    const halfHeight = 2.7;
     camera.left = -halfHeight * width / height;
     camera.right = halfHeight * width / height;
     camera.top = halfHeight;
@@ -191,11 +252,11 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     document.removeEventListener("visibilitychange", visibilityChanged);
     motionPreference.removeEventListener("change", preferenceChanged);
     geometries.forEach(geometry => geometry.dispose());
-    [...fronts, side, red, backing, edgeMaterial].forEach(material => material.dispose());
+    [...fronts, side, accent, backing, edgeMaterial, chrome, graphite].forEach(material => material.dispose());
     environment.dispose();
     renderer.dispose();
     canvas.remove();
   }
   sync();
-  return { setPaused: (value: boolean) => { paused = value; sync(); }, dispose };
+  return { setPaused: (value: boolean) => { paused = value; sync(); }, setInspected: (value: boolean) => { inspectTarget = value ? 1 : 0; sync(true); }, dispose };
 }

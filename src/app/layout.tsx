@@ -7,6 +7,7 @@ import "@fontsource/inter/latin-400.css";
 import "@fontsource/inter/latin-500.css";
 import "@fontsource/ibm-plex-mono/latin-400.css";
 import "./globals.css";
+import "./rework.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { business, siteUrl } from "@/lib/site";

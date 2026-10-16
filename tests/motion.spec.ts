@@ -85,3 +85,24 @@ test("the conceptual product diagram supports keyboard selection", async ({page}
   await expect(page.locator("#concept-description")).toContainText("not yet verified");
   await expect(page.getByRole("button", {name:"Purchasing unavailable"})).toBeDisabled();
 });
+
+test("the identity assembly can be inspected by keyboard and returns to its exact resting form", async ({page}) => {
+  test.setTimeout(60_000);
+  await page.goto("/");
+  const host = page.locator(".artifact-webgl");
+  await expect(page.locator(".hero-artifact")).toHaveAttribute("data-renderer", "webgl", {timeout:20_000});
+  await expect(host).toHaveAttribute("data-activity", "resting", {timeout:20_000});
+  const inspect = page.getByRole("button", {name:"Inspect form", exact:true});
+  await inspect.focus();
+  // Match keyboard focus and scroll state in the two pixel comparisons.
+  const closed = await host.locator("canvas").screenshot();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("button", {name:"Reset form", exact:true})).toHaveAttribute("aria-pressed", "true");
+  await expect(host).toHaveAttribute("data-assembly", "open", {timeout:10_000});
+  await expect(host).toHaveAttribute("data-activity", "resting");
+  expect((await host.locator("canvas").screenshot()).equals(closed)).toBe(false);
+  await page.keyboard.press("Enter");
+  await expect(host).toHaveAttribute("data-assembly", "closed", {timeout:10_000});
+  await expect(host).toHaveAttribute("data-activity", "resting");
+  expect((await host.locator("canvas").screenshot()).equals(closed)).toBe(true);
+});

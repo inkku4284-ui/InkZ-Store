@@ -25,10 +25,10 @@ export function Header() {
 
   return <header className="site-header shell">
     <Link href="/" className="wordmark" aria-label="INKZ home" onClick={() => setOpen(false)}>INKZ<span>®</span></Link>
-    <span className="header-label mono">Independent software label</span>
+    <span className="header-label mono">Independent software.<br/>Uncompromised potential.</span><span className="header-status mono"><span aria-hidden="true"/> Pre-launch / In development</span>
     <button ref={button} type="button" className="menu-toggle mono" aria-expanded={open} aria-controls="main-nav" onClick={() => setOpen(!open)}>{open ? "Close −" : "Menu +"}</button>
     <nav id="main-nav" aria-label="Main navigation" className={`main-nav ${open ? "is-open" : ""}`}>
-      {navigation.map(({href, label}) => <Link key={href} href={href} aria-current={pathname === href || pathname.startsWith(`${href}/`) ? "page" : undefined} onClick={() => setOpen(false)}>{label}<Arrow diagonal /></Link>)}
+      {navigation.map(({href, label}) => <Link key={href} href={href} aria-current={pathname === href || pathname.startsWith(`${href}/`) ? "page" : undefined} onClick={() => setOpen(false)}><span className="nav-index mono" aria-hidden="true">0{navigation.findIndex(item => item.href === href) + 1}</span><span>{label}</span><Arrow diagonal /></Link>)}
     </nav>
   </header>;
 }

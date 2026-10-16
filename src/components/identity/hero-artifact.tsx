@@ -10,6 +10,8 @@ export function HeroArtifact() {
   const host = useRef<HTMLDivElement>(null);
   const controller = useRef<ArtifactController | null>(null);
   const pausedRef = useRef(false);
+  const inspectedRef = useRef(false);
+  const [inspected, setInspected] = useState(false);
   const [paused, setPaused] = useState(false);
   const reduced = useReducedMotion();
 
@@ -17,6 +19,11 @@ export function HeroArtifact() {
     pausedRef.current = paused;
     controller.current?.setPaused(paused);
   }, [paused]);
+
+  useEffect(() => {
+    inspectedRef.current = inspected;
+    controller.current?.setInspected(inspected);
+  }, [inspected]);
 
   useEffect(() => {
     const element = figure.current;
@@ -43,6 +50,7 @@ export function HeroArtifact() {
             motion: value => { element.dataset.motion = value; },
           });
           controller.current.setPaused(pausedRef.current);
+          controller.current.setInspected(inspectedRef.current);
         } catch {
           element.dataset.renderer = "static";
           element.dataset.motion = "still";
@@ -67,8 +75,8 @@ export function HeroArtifact() {
   }, [reduced]);
 
   return <figure ref={figure} className="hero-artifact" data-renderer="static" data-motion="still" aria-labelledby="artifact-caption">
-    <div className="artifact-register mono" aria-hidden="true"><span>INKZ / FORM—01</span><span>Identity study</span></div>
+    <div className="artifact-register mono" aria-hidden="true"><span>INKZ® / FORM—02</span><span>Interactive identity</span></div>
     <div className="artifact-stage" aria-hidden="true"><ArtifactPoster/><div ref={host} className="artifact-webgl"/></div>
-    <div className="artifact-bottom"><figcaption id="artifact-caption" className="mono"><span>Fracture.</span><span>A study in independence.</span></figcaption>{!reduced && <button className="artifact-control mono" type="button" onClick={() => setPaused(!paused)} aria-pressed={paused}><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">{paused ? <path d="m3 1 7 5-7 5Z" fill="currentColor"/> : <path d="M3 1v10M9 1v10" stroke="currentColor" strokeWidth="2"/>}</svg><span>{paused ? "Resume motion" : "Pause motion"}</span></button>}</div>
+    <div className="artifact-bottom"><figcaption id="artifact-caption" className="mono"><span>Independent by design.</span><span>Original form. Open possibilities.</span></figcaption>{!reduced && <div className="artifact-interactions"><button className="artifact-control artifact-inspect mono" type="button" aria-pressed={inspected} onClick={() => setInspected(!inspected)}><span aria-hidden="true">{inspected ? "−" : "+"}</span>{inspected ? "Reset form" : "Inspect form"}</button><button className="artifact-control mono" type="button" onClick={() => setPaused(!paused)} aria-pressed={paused}><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true">{paused ? <path d="m3 1 7 5-7 5Z" fill="currentColor"/> : <path d="M3 1v10M9 1v10" stroke="currentColor" strokeWidth="2"/>}</svg><span>{paused ? "Resume motion" : "Pause motion"}</span></button></div>}</div>
   </figure>;
 }
