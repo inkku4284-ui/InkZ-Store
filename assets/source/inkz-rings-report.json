@@ -1,0 +1,29 @@
+{
+  "blender": "4.3.2",
+  "source": "assets/source/inkz-rings.blend",
+  "model": "public/models/inkz-rings.glb",
+  "triangles": 32304,
+  "bytes": 588224,
+  "gzip_bytes": 239526,
+  "meshes": 15,
+  "nodes": [
+    "INKZ_Core",
+    "INKZ_Mark",
+    "Accent_Light_A",
+    "Primary_Edge",
+    "Primary_Fasteners",
+    "Ring_Primary",
+    "Orbit_Filament",
+    "Secondary_Edge",
+    "Ring_Secondary",
+    "Accent_Light_B",
+    "Tertiary_Fasteners",
+    "Ring_Tertiary",
+    "Satellite_01",
+    "Satellite_02",
+    "Satellite_03",
+    "THE_RINGS_FORM_001"
+  ],
+  "textures": 0,
+  "reference_limitation": "design/references/inkz-rings-main.png and the reference directory are missing; original geometry interprets the written brief and the attached composite, not an exact image reconstruction."
+}
