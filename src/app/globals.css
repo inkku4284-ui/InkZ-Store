@@ -228,7 +228,7 @@ details[open] .faq-plus::after { transform:rotate(0); }
 .concept-controls button { min-height:46px; flex:1; display:flex; align-items:center; justify-content:center; gap:12px; padding:10px; font-size:12px; background:transparent; color:var(--void); border:1px solid #817e85; }
 .concept-controls button .mono { font-size:10px; }
 .concept-controls button[aria-pressed="true"] { background:var(--void); color:var(--bone); border-color:var(--void); }
-.concept-description { min-height:6em; font-size:12px; color:#55545b; line-height:1.8; }
+.article-section .concept-description { min-height:6em; font-size:12px; color:#55545b; line-height:1.8; }
 .concept-diagram[data-stage="intent"] .diagram-intent,.concept-diagram[data-stage="rules"] .diagram-rules,.concept-diagram[data-stage="state"] .diagram-state { fill:#e4d8d8; stroke:#9f2031; stroke-width:2; }
 /* Documentation and policy are reading environments, not marketing cards. */
 .document-layout { display:grid; grid-template-columns:210px minmax(0,1fr); gap:64px; padding-block:40px 64px; }
@@ -247,7 +247,7 @@ details[open] .faq-plus::after { transform:rotate(0); }
 .article-section a,.notice a { text-decoration:underline; text-underline-offset:4px; }
 .article-section ul,.article-section ol { padding-left:22px; list-style:revert; margin:18px 0 0; }
 .article-section li+li { margin-top:10px; }
-.article-section .mono { font-size:10px; color:var(--subtle); margin-bottom:12px; }
+.article-section>.mono { font-size:10px; color:var(--subtle); margin-bottom:12px; }
 .notice { display:grid; grid-template-columns:130px 1fr; gap:24px; background:var(--panel); padding:24px; border:1px solid var(--steel); border-left:2px solid var(--red); }
 .notice-marker { font-size:10px; color:var(--red-text); }
 .notice-marker>span { display:block; font-size:24px; line-height:1; margin-bottom:12px; }
