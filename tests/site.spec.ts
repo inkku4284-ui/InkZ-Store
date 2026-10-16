@@ -55,12 +55,12 @@ test("mobile navigation supports keyboard, Escape, and route changes", async ({p
   await page.keyboard.press("Enter");
   await expect(toggle).toHaveAttribute("aria-expanded","true");
   await page.keyboard.press("Tab");
-  await expect(navigation.getByRole("link",{name:"Catalog"})).toBeFocused();
+  await expect(navigation.getByRole("link",{name:"Products"})).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(toggle).toBeFocused();
   await expect(navigation).not.toBeVisible();
   await toggle.click();
-  await navigation.getByRole("link",{name:"Catalog"}).click();
+  await navigation.getByRole("link",{name:"Products"}).click();
   await expect(page).toHaveURL(/\/products$/);
   await expect(navigation).not.toBeVisible();
   await expect(page.getByRole("button",{name:"Menu +"})).toHaveAttribute("aria-expanded","false");
