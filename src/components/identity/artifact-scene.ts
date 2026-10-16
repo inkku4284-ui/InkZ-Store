@@ -181,7 +181,7 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     canvas.removeEventListener("webglcontextlost", contextLost); document.removeEventListener("visibilitychange", visibility);
     preference.removeEventListener("change", preferenceChanged);
     if (model) { sculpture.remove(model); disposeModel(model); model = null; }
-    rings = []; environment?.dispose(); environment = null; scene.clear(); renderer.dispose();
+    rings = []; scene.environment = null; environment?.dispose(); environment = null; scene.clear(); renderer.dispose();
     if (!renderer.getContext().isContextLost()) renderer.forceContextLoss();
     canvas.remove();
   }
