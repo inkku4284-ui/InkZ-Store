@@ -341,7 +341,7 @@ svg { flex-shrink:0; }
 @media(min-width:1800px) { .hero-title { font-size:92px; } .hero-artifact { height:690px; } }
 @media(max-width:1100px) {
   .header-label { display:none; } .main-nav { gap:28px; }
-  .hero { grid-template-columns:.92fr 1.08fr; min-height:610px; } .hero-artifact { height:560px; } .hero-title { font-size:5.5vw; }
+  .hero { grid-template-columns:.92fr 1.08fr; min-height:580px; } .hero-artifact { height:min(560px,51vw); } .hero-title { font-size:5.5vw; }
   .artifact-bottom figcaption { display:none; } .artifact-bottom { justify-content:flex-end; }
   .featured-product,.evaluation,.faq-section,.contact-layout,.sandbox-layout { gap:6%; }
   .document-layout { grid-template-columns:200px minmax(0,1fr); gap:5%; }
