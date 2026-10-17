@@ -4,25 +4,25 @@
     "observation": "Local production build, software WebGL, unthrottled; not a physical-device benchmark or Lighthouse score.",
     "performance": {
       "cls": 0.00003822048611111111,
-      "lcp": 688,
+      "lcp": 876,
       "assets": [
         {
           "file": "/models/inkz-rings.glb",
           "transferBytes": 294908,
           "encodedBytes": 294608,
-          "durationMs": 47
+          "durationMs": 68
         },
         {
           "file": "/models/inkz-studio.bin.gz",
           "transferBytes": 70229,
           "encodedBytes": 69929,
-          "durationMs": 11
+          "durationMs": 16
         },
         {
           "file": "/models/inkz-core-studio.bin.gz",
           "transferBytes": 354084,
           "encodedBytes": 353784,
-          "durationMs": 15
+          "durationMs": 17
         }
       ],
       "model": {
@@ -128,13 +128,13 @@
     "observation": "Local production build, software WebGL, unthrottled; not a physical-device benchmark or Lighthouse score.",
     "performance": {
       "cls": 0.003952287980978006,
-      "lcp": 332,
+      "lcp": 296,
       "assets": [
         {
           "file": "/models/inkz-rings.glb",
           "transferBytes": 294908,
           "encodedBytes": 294608,
-          "durationMs": 37
+          "durationMs": 33
         },
         {
           "file": "/models/inkz-studio.bin.gz",
@@ -146,7 +146,7 @@
           "file": "/models/inkz-core-studio.bin.gz",
           "transferBytes": 354084,
           "encodedBytes": 353784,
-          "durationMs": 7
+          "durationMs": 8
         }
       ],
       "model": {
