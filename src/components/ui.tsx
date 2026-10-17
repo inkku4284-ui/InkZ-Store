@@ -12,7 +12,7 @@ export function Status({ children = "Not launched" }: { children?: ReactNode }) 
   return <span className="status mono"><span aria-hidden="true"/>{children}</span>;
 }
 export function PageIntro({ index, eyebrow, title, children }: { index: string; eyebrow: string; title: string; children: ReactNode }) {
-  return <header className="page-intro shell"><div className="page-intro-top"><SectionLabel number={index}>{eyebrow}</SectionLabel><span className="edition mono">INKZ® STORE / V2</span></div><div className="page-intro-heading"><h1>{title}</h1><div className="page-intro-copy">{children}</div></div></header>;
+  return <header className="page-intro shell"><div className="page-intro-top"><SectionLabel number={index}>{eyebrow}</SectionLabel><span className="edition mono">Independent software / Pre-launch</span></div><div className="page-intro-heading"><h1>{title}</h1><div className="page-intro-copy">{children}</div></div></header>;
 }
 export function Notice({ title, children }: { title: string; children: ReactNode }) {
   return <aside className="notice"><div className="notice-marker mono"><span aria-hidden="true">!</span>Pre-launch notice</div><div><h2>{title}</h2><div>{children}</div></div></aside>;

@@ -1,4 +1,8 @@
-/** Original label artwork. It does not depict gameplay, source, or a shipped feature. */
+/** Original typographic label artwork. Never gameplay or a shipped feature. */
 export function ProductArtwork({ compact = false }: { compact?: boolean }) {
-  return <figure className={`product-artwork ${compact ? "compact" : ""}`}><div className="artwork-register mono"><span>CF—001</span><span>INKZ® / SOFTWARE</span></div><div className="artwork-object" aria-hidden="true"><div className="artwork-spine">INKZ</div><div className="artwork-face"><span className="mono">COMBAT SYSTEM</span><strong>CF</strong><div className="artwork-rule"/><span className="mono">ROBLOX STUDIO / LUAU</span></div></div><figcaption className="mono">Label artwork · Not a product demonstration</figcaption></figure>;
+  return <figure className={`product-artwork ${compact ? "compact" : ""}`}>
+    <div className="artwork-register mono"><span>INKZ®</span><span>Software / 001</span></div>
+    <div className="artwork-object" aria-hidden="true"><div className="artwork-cross">+</div><span className="artwork-code">CF<span>—001</span></span><div className="artwork-rule"/><strong>COMBAT<br/>FRAMEWORK</strong><div className="artwork-platform mono"><span>Roblox Studio</span><span>Luau</span><span>In development</span></div></div>
+    <figcaption>Label artwork · Not a product demonstration</figcaption>
+  </figure>;
 }

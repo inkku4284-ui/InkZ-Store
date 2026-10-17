@@ -93,7 +93,7 @@ test("bundled assets load without third-party requests or tracking storage", asy
   page.on("requestfailed",request => failures.push(request.url()));
   await page.goto("/");
   await page.evaluate(() => document.fonts.ready);
-  expect(await page.evaluate(() => document.fonts.check('600 16px "Space Grotesk"'))).toBe(true);
+  expect(await page.evaluate(() => document.fonts.check('600 16px "Inter"'))).toBe(true);
   await expect(page.locator(".hero-artifact")).toHaveAttribute("data-renderer", "webgl", {timeout:20_000});
   expect(await page.evaluate(() => localStorage.length)).toBe(0);
   expect(await page.context().cookies()).toEqual([]);
@@ -118,4 +118,20 @@ test("reduced motion and the skip link work", async ({page}) => {
   await expect(page.getByRole("link",{name:"Skip to content"})).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.locator("main")).toBeFocused();
+});
+
+test("reading links keep section headings clear of the sticky navigation", async ({page}) => {
+  await page.emulateMedia({reducedMotion:"reduce"});
+  for (const [route, navigation, id] of [["/docs","Documentation sections","installation"],["/terms","On this page","license"],["/products/combat-framework","Product sections","architecture"]]) {
+    await page.goto(route);
+    const contents = page.getByRole("navigation",{name:navigation,exact:true});
+    await contents.locator(`a[href="#${id}"]`).focus();
+    await page.keyboard.press("Enter");
+    const heading = page.locator(`#${id} h2`);
+    await expect(heading).toBeInViewport();
+    const headingRect = await heading.boundingBox();
+    const headerRect = await page.locator(".site-header").boundingBox();
+    expect(headingRect?.y).toBeGreaterThanOrEqual((headerRect?.y ?? 0)+(headerRect?.height ?? 0));
+    await expect(page).toHaveURL(new RegExp(`#${id}$`));
+  }
 });

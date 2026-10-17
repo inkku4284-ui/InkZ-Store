@@ -86,16 +86,27 @@ test("the conceptual product diagram supports keyboard selection", async ({page}
   await expect(page.getByRole("button", {name:"Purchasing unavailable"})).toBeDisabled();
 });
 
-test("the identity assembly can be inspected by keyboard and returns to its exact resting form", async ({page}) => {
+test("the identity assembly can be inspected by keyboard and returns to its exact resting form", async ({page}, testInfo) => {
   test.setTimeout(60_000);
   await page.goto("/");
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    // Keep canvas captures at a settled scroll position below the sticky header.
+    document.documentElement.style.scrollBehavior = "auto";
+  });
   const host = page.locator(".artifact-webgl");
   await expect(page.locator(".hero-artifact")).toHaveAttribute("data-renderer", "webgl", {timeout:20_000});
   await expect(host).toHaveAttribute("data-activity", "resting", {timeout:20_000});
   const inspect = page.getByRole("button", {name:"Inspect form", exact:true});
   await inspect.focus();
-  // Match keyboard focus and scroll state in the two pixel comparisons.
+  // Settle scrolling and the compositor before comparing the same canvas pixels.
+  await host.locator("canvas").scrollIntoViewIfNeeded();
+  await expect(host).toHaveAttribute("data-activity", "resting");
+  const presented = () => page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await presented();
   const closed = await host.locator("canvas").screenshot();
+  const initialBounds = await host.boundingBox();
+  const initialScroll = await page.evaluate(() => scrollY);
   await page.keyboard.press("Enter");
   await expect(page.getByRole("button", {name:"Reset form", exact:true})).toHaveAttribute("aria-pressed", "true");
   await expect(host).toHaveAttribute("data-assembly", "open", {timeout:10_000});
@@ -104,5 +115,12 @@ test("the identity assembly can be inspected by keyboard and returns to its exac
   await page.keyboard.press("Enter");
   await expect(host).toHaveAttribute("data-assembly", "closed", {timeout:10_000});
   await expect(host).toHaveAttribute("data-activity", "resting");
-  expect((await host.locator("canvas").screenshot()).equals(closed)).toBe(true);
+  await presented();
+  const restored = await host.locator("canvas").screenshot();
+  if (!restored.equals(closed)) {
+    await testInfo.attach("before-reset", { body:closed, contentType:"image/png" });
+    await testInfo.attach("after-reset", { body:restored, contentType:"image/png" });
+    await testInfo.attach("capture-positions", { body:JSON.stringify({ initialBounds, initialScroll, finalBounds:await host.boundingBox(), finalScroll:await page.evaluate(() => scrollY) }), contentType:"application/json" });
+  }
+  expect(restored.equals(closed)).toBe(true);
 });
