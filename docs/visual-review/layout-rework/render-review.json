@@ -1,0 +1,802 @@
+[
+  {
+    "viewport": "desktop",
+    "observation": "Local production build, software WebGL, unthrottled; not a physical-device benchmark or Lighthouse score.",
+    "performance": {
+      "cls": 0.00003822048611111111,
+      "lcp": 688,
+      "assets": [
+        {
+          "file": "/models/inkz-rings.glb",
+          "transferBytes": 294908,
+          "encodedBytes": 294608,
+          "durationMs": 47
+        },
+        {
+          "file": "/models/inkz-studio.bin.gz",
+          "transferBytes": 70229,
+          "encodedBytes": 69929,
+          "durationMs": 11
+        },
+        {
+          "file": "/models/inkz-core-studio.bin.gz",
+          "transferBytes": 354084,
+          "encodedBytes": 353784,
+          "durationMs": 15
+        }
+      ],
+      "model": {
+        "load": "ready",
+        "model": "/models/inkz-rings.glb",
+        "rings": "3",
+        "triangles": "41436",
+        "assembly": "closed",
+        "activity": "resting"
+      }
+    }
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/products",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/products/combat-framework",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/docs",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/contact",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/terms",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/refund-policy",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/privacy",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/sandbox/checkout",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/sandbox/checkout/success",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/sandbox/checkout/cancel",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "width": 1440,
+    "route": "/no-such-system",
+    "status": 404,
+    "overflow": false
+  },
+  {
+    "viewport": "desktop",
+    "errors": []
+  },
+  {
+    "viewport": "mobile",
+    "observation": "Local production build, software WebGL, unthrottled; not a physical-device benchmark or Lighthouse score.",
+    "performance": {
+      "cls": 0.003952287980978006,
+      "lcp": 332,
+      "assets": [
+        {
+          "file": "/models/inkz-rings.glb",
+          "transferBytes": 294908,
+          "encodedBytes": 294608,
+          "durationMs": 37
+        },
+        {
+          "file": "/models/inkz-studio.bin.gz",
+          "transferBytes": 70229,
+          "encodedBytes": 69929,
+          "durationMs": 5
+        },
+        {
+          "file": "/models/inkz-core-studio.bin.gz",
+          "transferBytes": 354084,
+          "encodedBytes": 353784,
+          "durationMs": 7
+        }
+      ],
+      "model": {
+        "load": "ready",
+        "model": "/models/inkz-rings.glb",
+        "rings": "3",
+        "triangles": "41436",
+        "assembly": "closed",
+        "activity": "resting"
+      }
+    }
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/products",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/products/combat-framework",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/docs",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/contact",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/terms",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/refund-policy",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/privacy",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/sandbox/checkout",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/sandbox/checkout/success",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/sandbox/checkout/cancel",
+    "status": 200,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "width": 390,
+    "route": "/no-such-system",
+    "status": 404,
+    "overflow": false
+  },
+  {
+    "viewport": "mobile",
+    "errors": []
+  },
+  {
+    "viewport": "tablet-webgl",
+    "width": 768,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "viewport": "tablet-webgl",
+    "width": 1024,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 320,
+    "route": "/no-such-system",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 375,
+    "route": "/no-such-system",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "route": "/no-such-system",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 430,
+    "route": "/no-such-system",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 768,
+    "route": "/no-such-system",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 1024,
+    "route": "/no-such-system",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 1280,
+    "route": "/no-such-system",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 1440,
+    "route": "/no-such-system",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/products",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/products/combat-framework",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/docs",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/contact",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/terms",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/refund-policy",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/privacy",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/sandbox/checkout",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/sandbox/checkout/success",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/sandbox/checkout/cancel",
+    "overflow": false
+  },
+  {
+    "width": 1920,
+    "route": "/no-such-system",
+    "overflow": false
+  }
+]
