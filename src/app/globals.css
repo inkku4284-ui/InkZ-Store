@@ -92,7 +92,6 @@ svg { flex-shrink:0; }
 .featured-product { display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:9%; margin-top:36px; }
 .featured-record { min-width:0; }
 .featured-record h2 { font-size:clamp(42px,4.6vw,72px); letter-spacing:-.06em; line-height:1.02; margin-block:26px 22px; }
-.product-title-mark { font-size:.22em; vertical-align:top; margin-left:5px; }
 .featured-record>p { max-width:480px; color:var(--muted); font-size:15px; }
 .compact-facts { margin-block:26px; }
 .compact-facts>div { display:flex; justify-content:space-between; gap:24px; padding-block:12px; border-top:1px solid var(--steel); font-size:13px; }
