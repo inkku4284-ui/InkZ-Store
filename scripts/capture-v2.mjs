@@ -2,7 +2,7 @@
 import { chromium } from "@playwright/test";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
-const root=fileURLToPath(new URL("../docs/visual-review/v2",import.meta.url));
+const root=process.env.INKZ_REVIEW_OUTPUT || fileURLToPath(new URL("../docs/visual-review/v2",import.meta.url));
 const origin=process.env.INKZ_REVIEW_ORIGIN || "http://127.0.0.1:3110";
 const routes=[['home','/'],['products','/products'],['product','/products/combat-framework'],['docs','/docs'],['contact','/contact'],['terms','/terms'],['refunds','/refund-policy'],['privacy','/privacy'],['sandbox','/sandbox/checkout'],['success','/sandbox/checkout/success'],['cancel','/sandbox/checkout/cancel'],['404','/no-such-system']];
 (async()=>{
@@ -19,12 +19,12 @@ const routes=[['home','/'],['products','/products'],['product','/products/combat
   if(name==='mobile'){await page.locator('button[aria-controls="main-nav"]').click();await page.screenshot({path:`${root}/mobile-menu.png`});}
   review.push({viewport:name,errors});await page.close();
  }
- const page=await browser.newPage({viewport:{width:1280,height:900}});await page.goto('http://127.0.0.1:3112');await page.locator('body[data-ready="true"]').waitFor();await page.screenshot({path:`${root}/standalone-model.png`});await page.getByRole('button',{name:'Toggle wireframe'}).click();await page.screenshot({path:`${root}/standalone-wireframe.png`});await page.close();
+ if(process.env.INKZ_REVIEW_SKIP_VIEWER !== '1'){const page=await browser.newPage({viewport:{width:1280,height:900}});await page.goto('http://127.0.0.1:3112');await page.locator('body[data-ready="true"]').waitFor();await page.screenshot({path:`${root}/standalone-model.png`});await page.getByRole('button',{name:'Toggle wireframe'}).click();await page.screenshot({path:`${root}/standalone-wireframe.png`});await page.close();}
  const fallback=await browser.newPage({viewport:{width:1440,height:1000}});await fallback.route('**/models/inkz-rings.glb',r=>r.fulfill({status:404,body:'Unavailable'}));await fallback.goto(origin);await fallback.getByText('Interactive model unavailable. Rendered view shown.').waitFor();await fallback.screenshot({path:`${root}/model-unavailable.png`});await fallback.close();
  const reduced=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'});await reduced.goto(origin);await reduced.evaluate(()=>document.fonts.ready);await reduced.screenshot({path:`${root}/mobile-reduced-motion.png`,fullPage:true});await reduced.close();
  // The all-route matrix supplements the dedicated real-WebGL desktop/mobile run.
  const matrix=await browser.newPage({reducedMotion:'reduce'});
- for(const width of [320,375,390,768,1280,1440]){await matrix.setViewportSize({width,height:1000});for(const [,route] of routes){await matrix.goto(origin+route);await matrix.evaluate(()=>document.fonts.ready);review.push({width,route,overflow:await matrix.evaluate(()=>document.documentElement.scrollWidth>innerWidth)});}if([320,768,1280].includes(width)){await matrix.goto(origin);await matrix.evaluate(()=>document.fonts.ready);await matrix.screenshot({path:`${root}/home-${width}.png`,fullPage:true});}}
+ for(const width of [320,375,390,430,768,1024,1280,1440,1920]){await matrix.setViewportSize({width,height:1000});for(const [,route] of routes){await matrix.goto(origin+route);await matrix.evaluate(()=>document.fonts.ready);review.push({width,route,overflow:await matrix.evaluate(()=>document.documentElement.scrollWidth>innerWidth)});}if([320,768,1024,1280].includes(width)){await matrix.goto(origin);await matrix.evaluate(()=>document.fonts.ready);await matrix.screenshot({path:`${root}/home-${width}.png`,fullPage:true});}}
  await matrix.close(); fs.writeFileSync(`${root}/render-review.json`,JSON.stringify(review,null,2)); console.log(JSON.stringify({screenshots:fs.readdirSync(root).filter(x=>x.endsWith('.png')).length,reviewCount:review.length,problems:review.filter(x=>x.overflow||x.errors?.length)}));
  await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

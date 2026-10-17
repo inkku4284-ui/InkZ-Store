@@ -89,6 +89,11 @@ test("the conceptual product diagram supports keyboard selection", async ({page}
 test("the identity assembly can be inspected by keyboard and returns to its exact resting form", async ({page}) => {
   test.setTimeout(60_000);
   await page.goto("/");
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    // Keep canvas captures at a settled scroll position below the sticky header.
+    document.documentElement.style.scrollBehavior = "auto";
+  });
   const host = page.locator(".artifact-webgl");
   await expect(page.locator(".hero-artifact")).toHaveAttribute("data-renderer", "webgl", {timeout:20_000});
   await expect(host).toHaveAttribute("data-activity", "resting", {timeout:20_000});
