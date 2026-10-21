@@ -8,7 +8,7 @@ export function TextLink({ href, children, light = false }: { href: string; chil
 export function SectionLabel({ number, children }: { number: string; children: ReactNode }) {
   return <div className="section-label mono"><span>{number}</span><span>{children}</span></div>;
 }
-export function Status({ children = "Launching soon" }: { children?: ReactNode }) {
+export function Status({ children = "Available now" }: { children?: ReactNode }) {
   return <span className="status mono"><span aria-hidden="true"/>{children}</span>;
 }
 export function PageIntro({ index, eyebrow, title, children }: { index: string; eyebrow: string; title: string; children: ReactNode }) {

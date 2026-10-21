@@ -29,7 +29,7 @@ export const combat: Product = {
   platform: "Roblox Studio · R6",
   language: "Luau",
   version: "1.0",
-  availability: "Launching soon",
+  availability: "Available now",
   price: "349 THB",
   delivery: "Instant .rbxm download right after payment, on your order page.",
   description: "A server-authoritative R6 fist combat framework: M1 strings, parries and parry trades, air combos, posture and guard breaks, ragdolls, a full UI and two AI sparring NPCs. Installs with one line.",

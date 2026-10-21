@@ -15,7 +15,7 @@ export const business = {
   refundTerms: "The download is delivered instantly, so purchases are final once the file is available, except: if you were charged twice, never received a working download, or the framework does not work as described and we cannot fix it within 7 days of your report, you get a full refund. Contact support on Discord with your Stripe receipt. This does not limit any rights you have under the law that applies to you." as string | null,
   deliveryTerms: "Right after payment you land on your order page with the download. That page (its address) is your download link: bookmark it. Lost it? Message support with your Stripe receipt." as string | null,
   /** Flip to true when live sales open (INKZ_SALES=live with live Stripe keys). */
-  launched: false,
+  launched: true,
 };
 
 function publicOrigin(): string | undefined {

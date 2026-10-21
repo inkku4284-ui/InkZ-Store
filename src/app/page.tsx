@@ -16,7 +16,7 @@ export default function Home() {
       <div className="hero-editorial"><SectionLabel number="INKZ®">Independent software label</SectionLabel>
         <h1 id="hero-heading" className="hero-title" aria-label="TOOLS FOR THE ONES WHO BUILD."><span className="hero-line"><span>TOOLS FOR</span></span><span className="hero-line"><span>THE ONES</span></span><span className="hero-line"><span>WHO BUILD.</span></span></h1>
         <div className="hero-copy"><p>Original software for Roblox creators.<br/>Designed with intent. Built on our terms.</p><Link href="/products" className="button button-red">Browse products<Arrow diagonal/></Link></div>
-        <p className="hero-note"><span className="release-dot" aria-hidden="true"/>Combat Framework · 349 THB · launching soon.</p>
+        <p className="hero-note"><span className="release-dot" aria-hidden="true"/>Combat Framework · 349 THB · available now.</p>
       </div><HeroArtifact/>
     </section>
     <div className="label-register shell mono"><span>INKZ IS LABEL.</span><span>Independent software / Thailand</span><span>Roblox Studio — Luau</span></div>

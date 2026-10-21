@@ -3,7 +3,7 @@ import { combat } from "@/lib/products";
 import { business } from "@/lib/site";
 
 const questions = [
-  ["Can I buy it yet?", <>Combat Framework costs {combat.price}, one-time. Sales open soon: the buy button switches on at launch. The <Link href="/docs">install guide</Link> is already public.</>],
+  ["Can I buy it?", <>Yes: {combat.price}, one-time, card or PromptPay, instant download. The <Link href="/docs">install guide</Link> is already public.</>],
   ["What does the license allow?", <>Use and modify it in any number of your own Roblox games, paid ones included. No reselling, sharing or redistributing. See <Link href="/terms#license">terms & licensing</Link>.</>],
   ["How is it delivered?", <>{combat.delivery} Pay with a card or PromptPay through Stripe.</>],
   ["Will it work with my game?", <>It is built for R6: the package makes every player R6 automatically while keeping their own avatar look. It installs with one line and checks your place for you. R15 is not supported. Read the <Link href="/docs#install">install guide</Link>.</>],
