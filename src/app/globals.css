@@ -472,3 +472,10 @@ svg { flex-shrink:0; }
 .guide-table th { color:var(--text); font-weight:600; }
 .table-scroll { max-width:100%; overflow-x:auto; }
 .code-block:focus-visible,.table-scroll:focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
+
+/* product showcase video: framed like the label artwork */
+.product-showcase { --text:var(--bone); --muted:#b7b7ba; --focus:var(--bone); margin-top:0; background:#131315; color:var(--bone); padding:22px; }
+.product-showcase .artwork-register { margin-bottom:16px; }
+.product-showcase video { display:block; width:100%; height:auto; aspect-ratio:16/9; background:#000; }
+.product-showcase figcaption { border-top:1px solid #444448; margin-top:16px; padding-top:14px; padding-bottom:0; font-size:11px; color:#bbb9b5; }
+@media(max-width:760px) { .product-showcase { padding:14px; } }

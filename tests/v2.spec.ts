@@ -19,11 +19,14 @@ test("the catalog searches real product data and recovers from an empty selectio
   expect((await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21a","wcag21aa"]).analyze()).violations).toEqual([]);
 });
 
-test("product presentation does not overlap navigation or pretend a demo exists", async ({page}) => {
+test("product showcase video sits above the section navigation with poster and captions", async ({page}) => {
   await page.goto("/products/combat-framework");
-  await expect(page.getByText("No approved footage available.",{exact:true})).toBeVisible();
-  await expect(page.locator("video,iframe")).toHaveCount(0);
-  const media=await page.locator(".media-pending").boundingBox();
+  const video=page.locator(".product-showcase video");
+  await expect(video).toHaveCount(1);
+  await expect(video).toHaveAttribute("poster","/media/combat-framework-poster.jpg");
+  await expect(page.locator('.product-showcase track[kind="captions"]')).toHaveCount(1);
+  await expect(page.locator("iframe")).toHaveCount(0);
+  const media=await page.locator(".product-showcase").boundingBox();
   const navigation=await page.getByRole("navigation",{name:"Product sections"}).boundingBox();
   expect(media!.y+media!.height).toBeLessThanOrEqual(navigation!.y);
   await expect(page.getByRole("button",{name:"Launching soon"})).toBeDisabled();
