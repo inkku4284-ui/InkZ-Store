@@ -62,7 +62,8 @@ test("product certainty, selected focus, and real-media omission remain explicit
   await expect(selected).toHaveCSS("outline-style","solid");
   await expect(selected).toHaveCSS("outline-color","rgb(10, 10, 11)");
   expect((await selected.boundingBox())!.height).toBeGreaterThanOrEqual(44);
-  await expect(page.locator("video,iframe")).toHaveCount(0);
+  await expect(page.locator("iframe")).toHaveCount(0);
+  await expect(page.locator(".product-showcase video")).toHaveCount(1);
   await expect(page.getByRole("button",{name:"Launching soon"})).toBeDisabled();
 });
 

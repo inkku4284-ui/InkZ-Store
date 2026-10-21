@@ -27,7 +27,9 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{1
 
 /** Checkout may only be opened by this site's own page (same origin, a fresh idempotency UUID, no body). */
 export function checkoutRequestAllowed(request: Request, origin: string) {
-  return request.headers.get("origin") === origin &&
+  const sent = request.headers.get("origin");
+  // the site's own origin, or the exact host this request came in on (a Vercel deployment URL, a custom domain)
+  return (sent === origin || (sent !== null && sent === new URL(request.url).origin)) &&
     (!request.headers.has("sec-fetch-site") || request.headers.get("sec-fetch-site") === "same-origin") &&
     UUID.test(request.headers.get("idempotency-key") ?? "");
 }
