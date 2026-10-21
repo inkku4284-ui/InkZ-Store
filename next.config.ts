@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const config: NextConfig = {
   poweredByHeader: false,
+  // the encrypted product file ships with the download function (it is read from disk at request time)
+  outputFileTracingIncludes: { "/api/download": ["./private/**/*"] },
   async headers() {
     return [{
       source: "/(.*)",

@@ -4,15 +4,18 @@ export const business = {
   type: "Independent Software Label / Digital Software Products",
   businessCountry: "Thailand",
   description: "Independent Roblox frameworks for developers who want control over their systems.",
+  /** Support: buyers add the owner on Discord. */
+  supportDiscord: "inkz_xko",
   supportEmail: null as string | null,
   legalOperator: null as string | null,
   businessJurisdiction: null as string | null,
   publicBusinessAddress: null as string | null,
-  supportResponseTime: null as string | null,
-  licenseTerms: null as string | null,
-  refundTerms: null as string | null,
-  deliveryTerms: null as string | null,
-  paymentsEnabled: false as const,
+  supportResponseTime: "Usually within 24–48 hours" as string | null,
+  licenseTerms: "One purchase gives one buyer (a person, or one team working on its own games) a lifetime license to use and modify Combat Framework in any number of Roblox experiences they make, including paid and monetized ones. You may not resell, share, re-upload, give away or redistribute the framework, its source, animations or assets, on their own or inside another kit, model, asset pack or template. Players of your games need no license." as string | null,
+  refundTerms: "The download is delivered instantly, so purchases are final once the file is available, except: if you were charged twice, never received a working download, or the framework does not work as described and we cannot fix it within 7 days of your report, you get a full refund. Contact support on Discord with your Stripe receipt. This does not limit any rights you have under the law that applies to you." as string | null,
+  deliveryTerms: "Right after payment you land on your order page with the download. That page (its address) is your download link: bookmark it. Lost it? Message support with your Stripe receipt." as string | null,
+  /** Flip to true when live sales open (INKZ_SALES=live with live Stripe keys). */
+  launched: false,
 };
 
 function publicOrigin(): string | undefined {
@@ -33,11 +36,8 @@ export const navigation = [
 ];
 
 export const launchRequirements = [
-  "Confirm the legal operator with the owner and parent/guardian, the applicable legal jurisdiction, and legally required public business details. The confirmed business country is Thailand.",
-  "Provide and verify a working public support email and define support scope and response expectations.",
-  "Supply and review the actual product source, architecture, supported features, installation steps, compatibility, and technical limitations.",
-  "Finalize the planned USD pricing, applicable taxes, license rights, secure download delivery terms, update policy, and a refund process that respects applicable consumer law.",
-  "Verify Stripe’s applicable age, country, account, and representative requirements, including authorized adult involvement; complete onboarding and confirm live-payment eligibility.",
-  "Implement and test server-side Checkout Sessions, signed webhooks, order records, and secure, expiring fulfillment before enabling purchases.",
-  "Set the real production URL, verify the deployment and support channel, and review hosting data processing and all published policies.",
+  "Activate the Stripe account for live payments, meeting Stripe's own requirements for the account holder (age, identity, country and business details) — with an authorized adult if those requirements call for one.",
+  "Create the live Product and 349 THB Price in Stripe (live mode), enable PromptPay and cards, and set the live keys and Price in Vercel Production only.",
+  "Confirm the published license, refund and delivery terms, and add any business details the law or Stripe requires.",
+  "Run one real purchase end to end (pay, download, install) before announcing the launch.",
 ];
