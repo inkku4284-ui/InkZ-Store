@@ -66,7 +66,7 @@ test("mobile navigation supports keyboard, Escape, and route changes", async ({p
   await expect(page.getByRole("button",{name:"Menu +"})).toHaveAttribute("aria-expanded","false");
 });
 
-test("FAQ is keyboard operable and purchasing stays disabled", async ({page}) => {
+test("FAQ is keyboard operable and purchasing is closed without store configuration", async ({page}) => {
   await page.goto("/");
   const question = page.locator("summary").first();
   await question.focus();
@@ -76,11 +76,11 @@ test("FAQ is keyboard operable and purchasing stays disabled", async ({page}) =>
   await page.keyboard.press("Enter");
   await expect(page.locator("details").first()).not.toHaveAttribute("open");
   await page.goto("/products/combat-framework");
-  await expect(page.getByRole("button",{name:"Purchasing unavailable"})).toBeDisabled();
+  await expect(page.getByRole("button",{name:"Launching soon"})).toBeDisabled();
   await expect(page.locator("form,input,iframe")).toHaveCount(0);
   await page.goto("/contact");
   await expect(page.locator("form,input")).toHaveCount(0);
-  await expect(page.getByText("There is no active contact form",{exact:false})).toBeVisible();
+  await expect(page.getByText("There is no contact form on this site",{exact:false})).toBeVisible();
 });
 
 test("bundled assets load without third-party requests or tracking storage", async ({page}) => {
@@ -122,7 +122,7 @@ test("reduced motion and the skip link work", async ({page}) => {
 
 test("reading links keep section headings clear of the sticky navigation", async ({page}) => {
   await page.emulateMedia({reducedMotion:"reduce"});
-  for (const [route, navigation, id] of [["/docs","Documentation sections","installation"],["/terms","On this page","license"],["/products/combat-framework","Product sections","architecture"]]) {
+  for (const [route, navigation, id] of [["/docs","Documentation sections","install"],["/terms","On this page","license"],["/products/combat-framework","Product sections","architecture"]]) {
     await page.goto(route);
     const contents = page.getByRole("navigation",{name:navigation,exact:true});
     await contents.locator(`a[href="#${id}"]`).focus();

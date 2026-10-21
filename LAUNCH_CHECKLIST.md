@@ -8,15 +8,15 @@ The development website can run independently of these tasks. **Stripe submissio
 - [ ] Verify the responsible legal operator with the owner and parent/guardian, applicable jurisdiction, and any legally required business address/registration/tax information. Do not substitute the brand name for the operator. Publish only necessary, accurate business information.
 - [ ] Verify Stripe’s requirements for the actual country, account type, age, business, and representative. The owner is under 18: confirm authorized adult involvement and legal authority directly with the applicable provider requirements; do not misstate age or identity.
 - [ ] Confirm processor approval and live-payment eligibility. A live website alone is insufficient.
-- [ ] Publish and test a real support email in `src/lib/site.ts`; define scope, hours, and realistic response expectations. No email is currently supplied.
+- [x] Support channel: Discord friend request to inkz_xko (published on /contact).
 
 ## Product and policies
 
-- [ ] Review the actual Combat Framework source and distribution package. Verify features, versions, dependencies, rig/input support, security boundaries, limitations, and architecture.
-- [ ] Test real installation and integration instructions in a clean Roblox Studio test place. Replace preparation-only guidance with verified release documentation.
-- [ ] Finalize the planned USD price, tax handling, release/version, and exact included materials. No price is confirmed.
+- [x] Review the actual Combat Framework source and distribution package (v1.0: R6, installer + setup checker, assets audited: sounds/textures public, animations re-uploaded by buyers).
+- [x] Installation tested by running the packaged installer in Studio; guide published at /docs and inside the package (README_EN / README_TH).
+- [x] Price: 349 THB one-time (Thai market first). Version 1.0. Tax handling: owner to confirm.
 - [ ] Finalize source access, modification, commercial use, team/project limits, redistribution, third-party asset rights, updates, and support terms. The brand statement grants no legal rights.
-- [ ] Implement the planned secure digital download after verified payment, and finalize delivery timing and terms. Finalize a fair refund/withdrawal policy consistent with applicable consumer law, including a reachable refund process and digital-content consent requirements where applicable.
+- [x] Secure download after Stripe-verified payment (encrypted package, session check on every download). Delivery terms published. Finalize a fair refund/withdrawal policy consistent with applicable consumer law, including a reachable refund process and digital-content consent requirements where applicable.
 - [ ] Review all policy pages against the actual business and deployed services; update the policy date and remove pending notices only when resolved.
 
 ## Deployment, data, and payments
@@ -28,8 +28,8 @@ The development website can run independently of these tasks. **Stripe submissio
 - [ ] Complete desktop/mobile, keyboard, screen-reader, and real-device release review. Automated accessibility checks do not replace manual testing.
 - [ ] Enable purchasing only when the product, business authority, payment approval, pricing, license, refund policy, support, and delivery workflow are ready.
 
-Current facts: INKZ is a pre-launch independent software label based in Thailand. Combat Framework targets Roblox Studio and Luau. Pricing is planned in USD; the amount is pending. Secure digital download after verified payment is planned and not implemented. No license rights, refund terms, release date, support email, legal operator, governing jurisdiction, delivery guarantee, or support commitment is confirmed. No live deployment has been verified by local development checks.
+Current facts: INKZ is an independent software label based in Thailand. Combat Framework v1.0 (Roblox Studio, Luau, R6) sells for 349 THB one-time with instant download after Stripe-verified payment; support is on Discord (inkz_xko). Live payments stay off until the items above are done.
 
-## Separate Phase III Sandbox
+## Test mode
 
-The optional, explicitly gated Stripe Sandbox flow simulates payments only. It does not resolve any live-launch prerequisite above. See [STRIPE_SANDBOX.md](./STRIPE_SANDBOX.md) for exact Price verification, manual Dashboard steps, and volatile storage limits. No digital delivery is implemented.
+Set `INKZ_SALES=test` with a Stripe test key on Preview only (see README "Store"). Test mode is refused on Production.

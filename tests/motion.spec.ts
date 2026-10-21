@@ -73,17 +73,17 @@ test("a lost WebGL context restores the designed poster", async ({page}) => {
 
 test("the conceptual product diagram supports keyboard selection", async ({page}) => {
   await page.goto("/products/combat-framework");
-  const controls = page.getByRole("group", {name:"Conceptual interaction stages"});
+  const controls = page.getByRole("group", {name:"Stages of a hit"});
   const rules = controls.getByRole("button", {name:"02 Rules"});
   await rules.focus();
   await page.keyboard.press("Enter");
   await expect(rules).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("#concept-description")).toContainText("authority boundaries still require source review");
+  await expect(page.locator("#concept-description")).toContainText("runs the hitbox between the animation");
   await page.keyboard.press("Tab");
   await page.keyboard.press("Enter");
   await expect(controls.getByRole("button", {name:"03 State"})).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("#concept-description")).toContainText("not yet verified");
-  await expect(page.getByRole("button", {name:"Purchasing unavailable"})).toBeDisabled();
+  await expect(page.locator("#concept-description")).toContainText("change on the server only");
+  await expect(page.getByRole("button", {name:"Launching soon"})).toBeDisabled();
 });
 
 test("the identity assembly can be inspected by keyboard and returns to its exact resting form", async ({page}, testInfo) => {

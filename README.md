@@ -54,13 +54,13 @@ Use `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to select another Chromium binary. CI uses 
 ## Content and launch status
 
 - `src/lib/site.ts`: public business configuration, navigation, and owner checklist. Unconfirmed facts are `null` and visibly identified as pending. Never put private personal information or secrets here.
-- `src/lib/products.ts`: typed product collection. There is one pre-launch product; its price is unconfirmed. Add future products only with verified information and matching routes.
+- `src/lib/products.ts`: typed product collection. One product: Combat Framework (349 THB). Add future products only with verified information and matching routes.
 - `src/app/`: homepage, catalog, Combat Framework, documentation, contact, terms, refunds, and privacy.
 - `src/components/system-diagram.tsx`: original conceptual diagram, explicitly not a verified product architecture.
 
-**Not ready for Stripe submission or live sales.** See [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md). There is no contact form, email placeholder, fake checkout, invented API, analytics, or sales claim. Update the policies whenever actual business practices or data processing change.
+**Sales: test mode first.** Checkout + instant download are implemented (see "Store" below); live sales open when the owner completes [LAUNCH_CHECKLIST.md](./LAUNCH_CHECKLIST.md) and sets `INKZ_SALES=live` with live keys, then flips `business.launched` in `src/lib/site.ts`.
 
-Confirmed owner information: business country Thailand; business type Independent Software Label / Digital Software Products. Combat Framework pricing is planned in USD, with no confirmed amount. Secure digital download after verified payment is planned and not implemented. Legal operator confirmation with the owner and parent/guardian, a verified support email, license rights, and refund terms remain pending.
+Confirmed owner information: business country Thailand; business type Independent Software Label / Digital Software Products. Combat Framework: 349 THB one-time, instant .rbxm download, support on Discord (inkz_xko). License, refund and delivery terms are published in `src/lib/site.ts` (owner to confirm before live sales).
 
 ## Deploy to Vercel
 
@@ -72,18 +72,36 @@ Confirmed owner information: business country Thailand; business type Independen
 
 No deployment is performed by this repository’s setup. A working public site does not establish Stripe approval. Vercel preview deployment and publication are separate from a local production build.
 
-## Future payments
+## Store: Stripe checkout + instant download
 
-The purchase state is intentionally disabled in code. A product or a visible price alone must never enable purchasing. A separate implementation must establish:
+How a sale works:
 
-1. Server-side price lookup and Stripe Checkout Session creation. Client input must not determine trusted prices or product entitlements.
-2. Signature-verified webhook processing using the raw request body, durable event deduplication, and explicit handling of payment, refund, and dispute states.
-3. Durable order/license records and fulfillment only after a verified successful payment event. A success-page redirect is not proof of payment.
-4. Private artifact storage, authenticated or expiring download links, authorization checks, and an auditable delivery process. Never expose paid source in `public/` or this repository.
-5. Tests for invalid signatures, duplicated/out-of-order events, failed payments, unauthorized access, expired links, and refunds.
+1. `/products/combat-framework` → **Buy** → `POST /api/checkout` (same-origin, idempotency UUID, no body). The server checks the Stripe Price is exactly the advertised one (`COMBAT_SALE` in `src/lib/store/config.ts`: 349 THB, one-time, active) and opens Stripe-hosted Checkout. Payment methods come from the Stripe Dashboard (card, PromptPay, Apple Pay).
+2. Stripe returns the buyer to `/download?session_id={CHECKOUT_SESSION_ID}`. That page asks **Stripe** whether the session is complete + paid, for this Price, in this mode. Query strings prove nothing; PromptPay that isn't confirmed yet shows a "confirming" state.
+3. `GET /api/download?session_id=…` re-checks the same thing and streams the file, decrypted on the fly from `private/combat-framework.rbxm.enc` (AES-256-GCM; the repo is public, the key lives only in `COMBAT_FILE_KEY`). The order page address is the buyer's download link.
 
-Keep Stripe secret keys and webhook secrets in secure server-side deployment settings only. Use Sandbox credentials only for the optional test workflow; never configure live credentials in this phase. Verify age/country requirements and authorized adult involvement before live onboarding or acceptance of funds.
+No database, no webhook: Stripe is the order record. Rate limits are per process (best effort).
 
-## Stripe Sandbox (Phase III)
+### Environment (Vercel → Settings → Environment Variables)
 
-See [STRIPE_SANDBOX.md](./STRIPE_SANDBOX.md) for secure environment setup, Price verification, test cards, webhook forwarding, Vercel Preview configuration, and storage limitations. `/sandbox/checkout` is clearly labelled TEST MODE; the production purchase button remains disabled. Run `npm run test:server` for payment security checks.
+| Variable | Preview (test) | Production (live) |
+| --- | --- | --- |
+| `INKZ_SALES` | `test` | `live` (only when launching) |
+| `STRIPE_SECRET_KEY` | `sk_test_…` / `rk_test_…` | `sk_live_…` / `rk_live_…` |
+| `STRIPE_COMBAT_PRICE_ID` | `price_1UT60N2L1yv98dz3gj1uOuiG` | the live 349 THB Price |
+| `COMBAT_FILE_KEY` | the key from `scripts/encrypt-product.mjs` | same |
+
+Test mode is refused on Vercel Production, and test keys are refused in live mode. Without all variables the store is closed and the button reads "Launching soon". Mark keys as Sensitive.
+
+### Ship a new version of the product
+
+```
+COMBAT_FILE_KEY=<key> node scripts/encrypt-product.mjs path/to/INKZ_CombatFramework.rbxm
+git add private/combat-framework.rbxm.enc && git commit -m "Combat Framework vX.Y"
+```
+
+Update `COMBAT_SALE.version` too. Changing the price: create a new Price in Stripe, set `STRIPE_COMBAT_PRICE_ID`, and update `COMBAT_SALE.amount` and `combat.price`.
+
+### Test a purchase (Preview deployment, Stripe test mode)
+
+Open the Preview URL (Vercel Authentication keeps it private) → Buy → card `4242 4242 4242 4242`, any future date, any CVC → you land on `/download` → download → install. Decline test: `4000 0000 0000 9995`.

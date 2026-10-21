@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { combat } from "@/lib/products";
+import { business } from "@/lib/site";
 
 const questions = [
-  ["Can I buy a framework yet?", <>Not yet. Combat Framework has not launched. Pricing, payment processing, and delivery are still being finalized. The public store does not accept live payments. Optional Sandbox testing is separate and unlocks no product.</>],
-  ["What does the license allow?", <>License rights are not yet finalized. Commercial use, project limits, team access, redistribution, and modification rights must be published before sales open. See <Link href="/terms">terms & licensing</Link>.</>],
-  ["How will the software be delivered?", <>{combat.plannedDelivery} The delivery process will be documented and tested before purchasing is enabled.</>],
-  ["Will it work with my Roblox project?", <>Roblox Studio and Luau are the target platform and language. Specific versions, dependencies, rig types, and integration requirements have not been verified. Read the <Link href="/docs#compatibility">compatibility notes</Link> before making plans around the framework.</>],
-  ["What about support and updates?", <>A public support channel and support scope are being prepared. Update frequency and duration have not been set. No lifetime updates or permanent support are promised. Current status is on the <Link href="/contact">contact page</Link>.</>],
-  ["What is the refund policy?", <>There are currently no sales. Eligibility, the request process, and any digital-content consent requirements will be published before launch. Applicable consumer rights still apply. Read the <Link href="/refund-policy">refund policy</Link>.</>],
+  ["Can I buy it yet?", <>Combat Framework costs {combat.price}, one-time. Sales open soon: the buy button switches on at launch. The <Link href="/docs">install guide</Link> is already public.</>],
+  ["What does the license allow?", <>Use and modify it in any number of your own Roblox games, paid ones included. No reselling, sharing or redistributing. See <Link href="/terms#license">terms & licensing</Link>.</>],
+  ["How is it delivered?", <>{combat.delivery} Pay with a card or PromptPay through Stripe.</>],
+  ["Will it work with my game?", <>It is built for R6: the package makes every player R6 automatically while keeping their own avatar look. It installs with one line and checks your place for you. R15 is not supported. Read the <Link href="/docs#install">install guide</Link>.</>],
+  ["What about support and updates?", <>Add {business.supportDiscord} on Discord. Fixes to version 1 are free for buyers. See the <Link href="/contact">contact page</Link>.</>],
+  ["What is the refund policy?", <>Charged twice, no working download, or a problem that can&apos;t be fixed within 7 days: full refund. Read the <Link href="/refund-policy">refund policy</Link>.</>],
 ] as const;
 
 export function Faq() {

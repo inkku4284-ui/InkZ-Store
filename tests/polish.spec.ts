@@ -53,17 +53,17 @@ test("critical homepage content is readable with JavaScript disabled", async ({b
 
 test("product certainty, selected focus, and real-media omission remain explicit", async ({page}) => {
   await page.goto("/products/combat-framework");
-  for (const name of ["Confirmed targets","Planned release","Pending verification"]) {
+  for (const name of ["What you get.","Will it fit?","How a hit resolves."]) {
     await expect(page.getByRole("heading",{name,exact:true})).toBeVisible();
   }
-  await expect(page.locator(".concept-heading")).toContainText("Conceptual");
+  await expect(page.locator(".concept-heading")).toContainText("Server-authoritative");
   const selected = page.getByRole("button",{name:"01 Intent"});
   await selected.focus();
   await expect(selected).toHaveCSS("outline-style","solid");
   await expect(selected).toHaveCSS("outline-color","rgb(10, 10, 11)");
   expect((await selected.boundingBox())!.height).toBeGreaterThanOrEqual(44);
   await expect(page.locator("video,iframe")).toHaveCount(0);
-  await expect(page.getByRole("button",{name:"Purchasing unavailable"})).toBeDisabled();
+  await expect(page.getByRole("button",{name:"Launching soon"})).toBeDisabled();
 });
 
 test("required viewport matrix has unclipped headings, usable controls and no overflow", async ({page}) => {

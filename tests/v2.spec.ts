@@ -26,7 +26,7 @@ test("product presentation does not overlap navigation or pretend a demo exists"
   const media=await page.locator(".media-pending").boundingBox();
   const navigation=await page.getByRole("navigation",{name:"Product sections"}).boundingBox();
   expect(media!.y+media!.height).toBeLessThanOrEqual(navigation!.y);
-  await expect(page.getByRole("button",{name:"Purchasing unavailable"})).toBeDisabled();
+  await expect(page.getByRole("button",{name:"Launching soon"})).toBeDisabled();
 });
 
 test("THE RINGS is loaded as a measured named GLB model", async ({page,request}) => {
@@ -85,7 +85,7 @@ test("brand colors and all existing public routes retain their release boundarie
   const header=page.getByRole("heading",{name:"TOOLS FOR THE ONES WHO BUILD."});
   await expect(header).toBeVisible();
   await page.goto("/contact");
-  await expect(page.getByRole("heading",{name:"Contact channel pending."})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"Add inkz_xko on Discord."})).toBeVisible();
   await expect(page.locator('a[href^="mailto:"],form')).toHaveCount(0);
   for(const route of ["/terms","/refund-policy","/privacy"]) {
     await page.goto(route);
