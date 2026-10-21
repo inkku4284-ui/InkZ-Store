@@ -1,33 +1,22 @@
 import Link from "next/link";
-import { SectionLabel, Status, TextLink, Notice } from "@/components/ui";
+import { SectionLabel, TextLink } from "@/components/ui";
 import { ProductArtwork } from "@/components/product-artwork";
 import { ProductMedia } from "@/components/product-media";
 import { ConceptDiagram } from "@/components/concept-diagram";
-import { BuyButton } from "@/components/buy-button";
+import { PurchasePanel } from "@/components/buy-button";
 import { combat, features, included, requirements } from "@/lib/products";
 import { business } from "@/lib/site";
-import { storeStatus } from "@/lib/store/status";
 import { pageMetadata } from "@/lib/metadata";
 
-export const dynamic = "force-dynamic";
 export const metadata = pageMetadata("Combat Framework", "Server-authoritative R6 combat framework for Roblox: M1 strings, parry trades, air combos, ragdoll, full UI and two AI NPCs. 349 THB, instant download.", "/products/combat-framework");
 const sections = [["overview","Overview"],["features","Features"],["specifications","Requirements"],["architecture","Architecture"],["license","License & support"]] as const;
 
-export default async function CombatFramework({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const [store, params] = await Promise.all([storeStatus(), searchParams]);
-  const cancelled = params.checkout === "cancelled";
-  const statusLabel = store.open ? (store.mode === "test" ? "TEST MODE" : "Available now") : combat.availability;
-  const buyLabel = store.mode === "test" ? `TEST MODE — Buy · ${combat.price}` : `Buy now · ${combat.price}`;
+export default function CombatFramework() {
   return <><nav className="breadcrumbs shell" aria-label="Breadcrumb"><Link href="/products">← All products</Link><span aria-hidden="true">/</span><span>Combat Framework</span></nav>
-  <div className="product-hero shell"><div className="product-summary"><SectionLabel number="CF—001">{combat.category}</SectionLabel><h1>COMBAT<br/>FRAMEWORK</h1><Status>{statusLabel}</Status>
+  <div className="product-hero shell"><div className="product-summary"><SectionLabel number="CF—001">{combat.category}</SectionLabel><h1>COMBAT<br/>FRAMEWORK</h1>
     <p>{combat.description}</p>
     <dl className="compact-facts"><div><dt>Platform</dt><dd>{combat.platform}</dd></div><div><dt>Language</dt><dd>{combat.language}</dd></div><div><dt>Version</dt><dd>{combat.version}</dd></div></dl>
-    <div className="release-price"><span className="mono">Price / one-time</span><strong>{combat.price}</strong></div>
-    <BuyButton enabled={store.open} label={buyLabel} closedLabel="Launching soon"/>
-    <p id="purchase-explanation" className="purchase-explanation">{store.open
-      ? (store.mode === "test" ? "Stripe test mode: use a Stripe test card, no real money is charged." : `${combat.delivery} Card or PromptPay, via Stripe.`)
-      : "Sales open soon. The guide is already public, so you can see exactly how it installs."}</p>
-    {cancelled && <p className="order-feedback" role="status">Payment cancelled. You were not charged.</p>}
+    <PurchasePanel price={combat.price} availability={combat.availability} delivery={combat.delivery}/>
     <TextLink href="/docs">Read the install guide</TextLink></div>
     <div className="product-presentation"><ProductArtwork/><ProductMedia media={combat.media}/></div></div>
   <nav className="product-record-nav shell mono" aria-label="Product sections">{sections.map(([id,label],index) => <a key={id} href={`#${id}`}><span aria-hidden="true">0{index+1}</span>{label}</a>)}</nav>
@@ -38,5 +27,5 @@ export default async function CombatFramework({ searchParams }: { searchParams: 
     <section className="article-section" id="architecture"><p className="mono">04 / Architecture</p><h2>How a hit resolves.</h2><p>Your client plays your own move the moment you press; the server checks it, runs the hitbox between the animation&apos;s HitStart and HitStop events, decides block, parry, trade or hit, and broadcasts the result so every client animates it.</p><div className="concept-section"><ConceptDiagram/></div><p>Server scripts can drive any R6 model through the same API (that is how Vesper fights) and listen to every result for kill feeds, combo counters or quests. See the <Link href="/docs#api">scripting API</Link>.</p></section>
     <section className="article-section" id="license"><p className="mono">05 / License & support</p><h2>Yours to build with.</h2><p>{business.licenseTerms}</p><p>Support: add <strong>{business.supportDiscord}</strong> on Discord. Read the full <Link href="/terms#license">license</Link> and the <Link href="/refund-policy">refund policy</Link>.</p></section>
   </div>
-  <aside className="purchase-panel" aria-labelledby="purchase-heading"><SectionLabel number="ORDER">How buying works</SectionLabel><h2 id="purchase-heading">Pay. Download. Install.</h2><ol><li>Pay {combat.price} on Stripe (card or PromptPay).</li><li>Download the .rbxm on your order page right away.</li><li>Follow the <Link href="/docs#install">install guide</Link>: one line in the Command Bar.</li></ol>{store.mode === "test" && <Notice title="Test mode."><p>This deployment uses Stripe test mode: card 4242 4242 4242 4242, any future date, any CVC. No real money moves.</p></Notice>}<TextLink href="/docs">Install guide</TextLink><TextLink href="/contact">Support</TextLink></aside></div></>;
+  <aside className="purchase-panel" aria-labelledby="purchase-heading"><SectionLabel number="ORDER">How buying works</SectionLabel><h2 id="purchase-heading">Pay. Download. Install.</h2><ol><li>Pay {combat.price} on Stripe (card or PromptPay).</li><li>Download the .rbxm on your order page right away.</li><li>Follow the <Link href="/docs#install">install guide</Link>: one line in the Command Bar.</li></ol><TextLink href="/docs">Install guide</TextLink><TextLink href="/contact">Support</TextLink></aside></div></>;
 }
