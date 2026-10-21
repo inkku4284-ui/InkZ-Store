@@ -37,12 +37,12 @@ export default function Docs() {
       <ol><li>Open your place in Roblox Studio.</li><li>Drag <code>INKZ_CombatFramework.rbxm</code> into the Studio window (or right-click Workspace in the Explorer → Insert from File…).</li><li>A folder <code>INKZ_CombatFramework</code> appears in Workspace. That&apos;s expected: every script inside is switched off until you install.</li></ol>
       <h3>2 · Run the installer</h3>
       <ol><li>Top bar: View → <strong>Command Bar</strong> and View → <strong>Output</strong>.</li><li>Paste this line into the Command Bar and press Enter:</li></ol>
-      <code className="code-block">{INSTALL}</code>
+      <code className="code-block" tabIndex={0} aria-label="Installer command">{INSTALL}</code>
       <p>Every part moves to its service. Anything of yours with the same name (an old <code>Health</code> script, say) is moved to <code>ServerStorage._ReplacedByCombatFramework</code>, never deleted. Then a setup check prints what your place still needs: <strong>[ OK ]</strong> fine, <strong>[TODO]</strong> before real players join, <strong>[FIX!]</strong> broken.</p>
       <h3>3 · Press Play</h3>
       <p>Everything works in Studio now, animations included (until you upload your own, Studio plays the bundled rig&apos;s).</p>
       <p><strong>R6 is automatic.</strong> The package includes an R6 <code>StarterPlayer.StarterCharacter</code>, so players always spawn R6 whatever your Game Settings say, and the <code>PlayerAvatar</code> script dresses that body in each player&apos;s own avatar. Don&apos;t delete StarterCharacter: R15 breaks the animations and ragdoll.</p>
-      <div className="table-scroll"><table className="guide-table"><caption className="sr-only">Default controls</caption><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
+      <div className="table-scroll" tabIndex={0} role="region" aria-label="Default controls"><table className="guide-table"><caption className="sr-only">Default controls</caption><thead><tr><th scope="col">Key</th><th scope="col">Action</th></tr></thead><tbody>
         {[["1","Raise / lower the fists"],["M1","4-hit string (the 4th knocks back)"],["Ctrl + M1","Uppercut → air combo; keep pressing M1 in the air, the last hit slams"],["M1 in the air","Aerial attack"],["M1 while running","Running attack (double-tap W and hold to run)"],["R","Critical: breaks a guard, ragdolls on a clean hit"],["M2","Feint"],["F","Block; the first moments parry. F in your wind-up = cancel into parry. F in a combo = parry out of the stun. F after being parried = parry trade"],["Q","Roll; early through a hit = perfect dodge"]].map(([key, action]) => <tr key={key}><td><code>{key}</code></td><td>{action}</td></tr>)}
       </tbody></table></div>
     </ArticleSection>
@@ -57,8 +57,8 @@ export default function Docs() {
         <li>Drag the AnimationRig back into <code>ServerStorage → CombatFramework</code>. Keep it: the server reads the HitStart / HitStop hit timings from it.</li>
         <li>Check, then publish again and test from the Roblox website. The check must say <strong>“24 animation ids are yours”</strong>:</li>
       </ol>
-      <code className="code-block">{CHECK}</code>
-      <div className="table-scroll"><table className="guide-table"><caption className="sr-only">Animation names and their Config line</caption><thead><tr><th scope="col">In AnimSaves</th><th scope="col">Line in Config.Animations</th></tr></thead><tbody>{ANIMATIONS.map(([save, key]) => <tr key={save}><td>{save}</td><td><code>{key}</code></td></tr>)}</tbody></table></div>
+      <code className="code-block" tabIndex={0} aria-label="Setup check command">{CHECK}</code>
+      <div className="table-scroll" tabIndex={0} role="region" aria-label="Animation names"><table className="guide-table"><caption className="sr-only">Animation names and their Config line</caption><thead><tr><th scope="col">In AnimSaves</th><th scope="col">Line in Config.Animations</th></tr></thead><tbody>{ANIMATIONS.map(([save, key]) => <tr key={save}><td>{save}</td><td><code>{key}</code></td></tr>)}</tbody></table></div>
       <p>The <code>Dash</code> line stays empty: it is only used with <code>Config.Dash.Style = &quot;Dash&quot;</code>.</p>
     </ArticleSection>
 
@@ -77,7 +77,7 @@ export default function Docs() {
 
     <ArticleSection id="api" title="Scripting API.">
       <p>Server scripts can drive any R6 model with the same rules as players (that is how Vesper fights) and react to every result:</p>
-      <code className="code-block">{API}</code>
+      <code className="code-block" tabIndex={0} aria-label="Scripting API example">{API}</code>
       <p>Read-only character attributes for your own UI: Equipped, Attacking, Blocking, Stunned, StunKind, Posture, Combo, Weapon, Airborne, Dashing, Ragdolled, Running. Any NPC can talk: set its attribute <code>CF_Say</code> to <code>&quot;1|Hello&quot;</code>.</p>
     </ArticleSection>
 

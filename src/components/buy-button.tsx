@@ -1,15 +1,42 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Status } from "./ui";
 
-/** Opens Stripe Checkout. The server fixes the product and price; the button sends nothing but a retry-safe id. */
-export function BuyButton({ enabled, label, closedLabel }: { enabled: boolean; label: string; closedLabel: string }) {
+type Store = { open: boolean; mode: "test" | "live" | null };
+
+/**
+ * The purchase block of the product page. The page itself stays static; whether buying is open is asked from
+ * /api/store when it loads. Checkout is opened by the server, which fixes the product and price: the button
+ * sends nothing but a retry-safe id.
+ */
+export function PurchasePanel({ price, availability, delivery }: { price: string; availability: string; delivery: string }) {
+  const [store, setStore] = useState<Store>({ open: false, mode: null });
+  const [cancelled, setCancelled] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const requestId = useRef<string | null>(null);
   const busy = useRef(false);
+
+  useEffect(() => {
+    let live = true;
+    const cancelledNow = new URLSearchParams(window.location.search).get("checkout") === "cancelled";
+    Promise.resolve().then(() => {
+      if (live) setCancelled(cancelledNow);
+    });
+    fetch("/api/store", { cache: "no-store" })
+      .then(response => (response.ok ? response.json() : null))
+      .then((result: Store | null) => {
+        if (live && result && typeof result.open === "boolean") setStore(result);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, []);
+
   async function openCheckout() {
-    if (busy.current || !enabled) return;
+    if (busy.current || !store.open) return;
     busy.current = true;
     setPending(true);
     setError("");
@@ -27,10 +54,18 @@ export function BuyButton({ enabled, label, closedLabel }: { enabled: boolean; l
       setPending(false);
     }
   }
+
+  const test = store.mode === "test";
+  const label = store.open ? (test ? "TEST MODE" : "Available now") : availability;
   return <>
-    <button className="purchase-button" type="button" disabled={!enabled || pending} onClick={openCheckout} aria-describedby="purchase-explanation">
-      {pending ? "Opening checkout…" : enabled ? label : closedLabel}
+    <Status>{label}</Status>
+    <div className="release-price"><span className="mono">Price / one-time</span><strong>{price}</strong></div>
+    <button className="purchase-button" type="button" disabled={!store.open || pending} onClick={openCheckout} aria-describedby="purchase-explanation">
+      {pending ? "Opening checkout…" : store.open ? (test ? `TEST MODE — Buy · ${price}` : `Buy now · ${price}`) : "Launching soon"}
     </button>
-    <p role="status" aria-live="polite" className="order-feedback">{error}</p>
+    <p id="purchase-explanation" className="purchase-explanation">{store.open
+      ? (test ? "Stripe test mode: card 4242 4242 4242 4242, any future date, any CVC. No real money moves." : `${delivery} Card or PromptPay, via Stripe.`)
+      : "Sales open soon. The guide is already public, so you can see exactly how it installs."}</p>
+    <p role="status" aria-live="polite" className="order-feedback">{cancelled ? "Payment cancelled. You were not charged." : error}</p>
   </>;
 }

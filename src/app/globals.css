@@ -471,3 +471,4 @@ svg { flex-shrink:0; }
 .guide-table th,.guide-table td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--steel); color:var(--muted); vertical-align:top; }
 .guide-table th { color:var(--text); font-weight:600; }
 .table-scroll { max-width:100%; overflow-x:auto; }
+.code-block:focus-visible,.table-scroll:focus-visible { outline:2px solid var(--focus); outline-offset:2px; }
