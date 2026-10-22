@@ -13,6 +13,16 @@ const config: NextConfig = {
         { key: "X-Frame-Options", value: "DENY" },
         { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" }
       ]
+    }, {
+      source: "/download",
+      headers: [
+        { key: "Referrer-Policy", value: "no-referrer" },
+        { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        { key: "Cache-Control", value: "private, no-store" },
+      ],
+    }, {
+      source: "/api/:path*",
+      headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
     }];
   }
 };

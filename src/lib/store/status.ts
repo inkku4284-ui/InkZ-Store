@@ -1,6 +1,7 @@
 import "server-only";
 import { storeConfig, type StoreMode } from "./config";
 import { stripeClient, verifiedPrice } from "./stripe";
+import { deliveryConfig, deliveryEnabled } from "../delivery/config";
 
 export type StoreStatus = { open: boolean; mode: StoreMode | null };
 
@@ -8,6 +9,7 @@ export type StoreStatus = { open: boolean; mode: StoreMode | null };
 export async function storeStatus(): Promise<StoreStatus> {
   const config = storeConfig();
   if (!config) return { open: false, mode: null };
+  if (deliveryEnabled() && !deliveryConfig()) return { open: false, mode: null };
   try {
     await verifiedPrice(stripeClient(config), config);
     return { open: true, mode: config.mode };

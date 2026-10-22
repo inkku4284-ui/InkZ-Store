@@ -75,3 +75,29 @@ export const webhookEvents = pgTable("commerce_webhook_events", {
   outcome: text("outcome", { enum: ["processed", "ignored"] }).notNull(),
   receivedAt: time("received_at").notNull().defaultNow(),
 }, t => [check("commerce_webhook_events_outcome", sql`${t.outcome} IN ('processed', 'ignored')`)]);
+
+// Opaque credentials are stored as SHA-256 digests, never as usable bearer tokens.
+// Grants can precede the webhook: payment/entitlement is checked separately on every use.
+export const deliveryGrants = pgTable("commerce_delivery_grants", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  live: boolean("live").notNull(),
+  sessionId: text("stripe_session_id").notNull(),
+  browserHash: text("browser_hash").notNull(),
+  expiresAt: time("expires_at").notNull(),
+}, t => [uniqueIndex("commerce_delivery_grants_browser").on(t.live, t.sessionId, t.browserHash),
+  index("commerce_delivery_grants_expiry").on(t.expiresAt)]);
+
+export const deliveryTickets = pgTable("commerce_delivery_tickets", {
+  tokenHash: text("token_hash").primaryKey(),
+  live: boolean("live").notNull(),
+  sessionId: text("stripe_session_id").notNull(),
+  browserHash: text("browser_hash").notNull(),
+  expiresAt: time("expires_at").notNull(),
+  consumedAt: time("consumed_at"),
+}, t => [index("commerce_delivery_tickets_expiry").on(t.expiresAt)]);
+
+export const deliveryLimits = pgTable("commerce_delivery_limits", {
+  keyHash: text("key_hash").primaryKey(),
+  hits: integer("hits").notNull(),
+  expiresAt: time("expires_at").notNull(),
+}, t => [index("commerce_delivery_limits_expiry").on(t.expiresAt)]);

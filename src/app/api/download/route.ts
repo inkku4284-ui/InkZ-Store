@@ -2,11 +2,14 @@ import { COMBAT_SALE, storeConfig } from "@/lib/store/config";
 import { orderFor, stripeClient } from "@/lib/store/stripe";
 import { productFile } from "@/lib/store/file";
 import { clientIp, limits } from "@/lib/store/guard";
+import { deliveryEnabled } from "@/lib/delivery/config";
+import { deliveryReply, secureDownload } from "@/lib/delivery/http";
 
 export const runtime = "nodejs";
 const text = (body: string, status: number) => new Response(body, { status, headers: { "Cache-Control": "no-store", "Content-Type": "text/plain; charset=utf-8" } });
 
 export async function GET(request: Request) {
+  if (deliveryEnabled()) return secureDownload(request);
   const config = storeConfig();
   if (!config) return text("Downloads are not available.", 503);
   if (!limits.download.allow(clientIp(request))) return text("Too many downloads, please wait a minute.", 429);
@@ -31,3 +34,6 @@ export async function GET(request: Request) {
     },
   });
 }
+
+// HEAD/prefetch must never consume an opaque single-use download ticket.
+export const HEAD = () => deliveryReply("Method not allowed.", 405);
