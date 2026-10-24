@@ -13,6 +13,21 @@ const env = { INKZ_SALES: "test", INKZ_ORDER_LEDGER: "test", INKZ_SECURE_DELIVER
   STRIPE_WEBHOOK_SECRET: "whsec_fixture", STRIPE_COMBAT_PRICE_ID: "price_fixture", COMBAT_FILE_KEY: Buffer.alloc(32, 3).toString("base64"),
   DATABASE_URL: "postgresql://test:test@localhost/inkz_test", STORE_ORIGIN: "https://store.example" };
 
+test("a secure deployment alias returns an explicit canonical-store destination without creating a checkout", async () => {
+  const old = { ...process.env };
+  try {
+    Object.assign(process.env, env, { VERCEL_ENV: "preview" });
+    const response = await checkout(new Request("https://alias.example/api/checkout", { method: "POST",
+      headers: { origin: "https://alias.example", "Idempotency-Key": "e546272d-4bfe-49c1-b9c9-b8d4877da949" } }));
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { url: "https://store.example/products/combat-framework", destination: "store" });
+    assert.equal(response.headers.get("set-cookie"), null, "the buyer cookie belongs to the canonical host");
+  } finally {
+    for (const key of Object.keys(process.env)) if (!(key in old)) delete process.env[key];
+    Object.assign(process.env, old);
+  }
+});
+
 test("secure delivery is opt-in and invalid enabled configuration never downgrades to Session-ID authorization", async () => {
   assert.equal(deliveryEnabled({}), false);
   assert.equal(deliveryEnabled({ INKZ_SECURE_DELIVERY: "off" }), false);

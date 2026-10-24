@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   try {
     if (secure) {
       // Host-only cookies must return to the same canonical host after Stripe.
-      if (new URL(request.url).origin !== config.origin) return reply({ url: `${config.origin}/products/combat-framework` }, 200);
+      if (new URL(request.url).origin !== config.origin) return reply({ url: `${config.origin}/products/combat-framework`, destination: "store" }, 200);
       const service = deliveryService(secure);
       if (!await service.allow(`checkout:ip:${clientIp(request)}`, 6, 60) || !await service.allow("checkout:global", 60, 60)) {
         return reply({ error: "Please wait a moment and try again." }, 429);

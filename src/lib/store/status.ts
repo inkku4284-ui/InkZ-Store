@@ -3,7 +3,7 @@ import { storeConfig, type StoreMode } from "./config";
 import { stripeClient, verifiedPrice } from "./stripe";
 import { deliveryConfig, deliveryEnabled } from "../delivery/config";
 
-export type StoreStatus = { open: boolean; mode: StoreMode | null };
+export type StoreStatus = { open: boolean; mode: StoreMode | null; checkoutOrigin?: string };
 
 /** Is buying possible right now? Only when the server is configured AND Stripe confirms the advertised Price. */
 export async function storeStatus(): Promise<StoreStatus> {
@@ -12,7 +12,7 @@ export async function storeStatus(): Promise<StoreStatus> {
   if (deliveryEnabled() && !deliveryConfig()) return { open: false, mode: null };
   try {
     await verifiedPrice(stripeClient(config), config);
-    return { open: true, mode: config.mode };
+    return { open: true, mode: config.mode, checkoutOrigin: config.origin };
   } catch {
     return { open: false, mode: config.mode };
   }
