@@ -7,6 +7,8 @@ import { deliveryConfig } from "@/lib/delivery/config";
 import { deliveryService } from "@/lib/delivery/runtime";
 import { cookieName } from "@/lib/delivery/security";
 import { recoveryEmailConfig } from "@/lib/delivery/recovery-email";
+import { reviewsConfig } from "@/lib/reviews/config";
+import { ReviewForm } from "./review-form";
 
 export async function SecureDownload({ sessionId }: { sessionId: string }) {
   const config = deliveryConfig();
@@ -49,5 +51,6 @@ export async function SecureDownload({ sessionId }: { sessionId: string }) {
       {recoveryEmailConfig() ? <p><Link href={`/recover?session_id=${encodeURIComponent(sessionId)}`}>Restore access by email</Link></p>
         : <p>Email recovery is not configured yet. Contact support with your receipt.</p>}
     </aside></div>
+    {paid && reviewsConfig() ? <div className="shell"><ReviewForm sessionId={sessionId}/></div> : null}
   </>;
 }

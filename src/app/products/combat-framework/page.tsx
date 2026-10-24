@@ -3,12 +3,13 @@ import { SectionLabel, TextLink } from "@/components/ui";
 import { ProductMedia } from "@/components/product-media";
 import { ConceptDiagram } from "@/components/concept-diagram";
 import { PurchasePanel } from "@/components/buy-button";
+import { ProductReviews } from "@/components/product-reviews";
 import { combat, features, included, requirements } from "@/lib/products";
 import { business } from "@/lib/site";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata("Combat Framework", "Server-authoritative R6 combat framework for Roblox: M1 strings, parry trades, air combos, ragdoll, full UI and two AI NPCs. 349 THB, instant download.", "/products/combat-framework");
-const sections = [["overview","Overview"],["features","Features"],["specifications","Requirements"],["architecture","Architecture"],["license","License & support"]] as const;
+const sections = [["overview","Overview"],["features","Features"],["specifications","Requirements"],["architecture","Architecture"],["license","License & support"],["reviews","Reviews"]] as const;
 
 export default function CombatFramework() {
   return <><nav className="breadcrumbs shell" aria-label="Breadcrumb"><Link href="/products">← All products</Link><span aria-hidden="true">/</span><span>Combat Framework</span></nav>
@@ -25,6 +26,7 @@ export default function CombatFramework() {
     <section className="article-section" id="specifications"><p className="mono">03 / Requirements</p><h2>Will it fit?</h2><dl className="spec-table">{requirements.map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{value}</dd></div>)}</dl></section>
     <section className="article-section" id="architecture"><p className="mono">04 / Architecture</p><h2>How a hit resolves.</h2><p>Your client plays your own move the moment you press; the server checks it, runs the hitbox between the animation&apos;s HitStart and HitStop events, decides block, parry, trade or hit, and broadcasts the result so every client animates it.</p><div className="concept-section"><ConceptDiagram/></div><p>Server scripts can drive any R6 model through the same API (that is how Vesper fights) and listen to every result for kill feeds, combo counters or quests. See the <Link href="/docs#api">scripting API</Link>.</p></section>
     <section className="article-section" id="license"><p className="mono">05 / License & support</p><h2>Yours to build with.</h2><p>{business.licenseTerms}</p><p>Support: add <strong>{business.supportDiscord}</strong> on Discord. Read the full <Link href="/terms#license">license</Link> and the <Link href="/refund-policy">refund policy</Link>.</p></section>
+    <ProductReviews product={combat.slug}/>
   </div>
   <aside className="purchase-panel" aria-labelledby="purchase-heading"><SectionLabel number="ORDER">How buying works</SectionLabel><h2 id="purchase-heading">Pay. Download. Install.</h2><ol><li>Pay {combat.price} on Stripe (card or PromptPay).</li><li>Download the .rbxm on your order page right away.</li><li>Follow the <Link href="/docs#install">install guide</Link>: one line in the Command Bar.</li></ol><TextLink href="/docs">Install guide</TextLink><TextLink href="/contact">Support</TextLink></aside></div></>;
 }

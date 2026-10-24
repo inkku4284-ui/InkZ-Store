@@ -18,7 +18,7 @@ export async function exerciseRecovery<T extends PgQueryResultHKT>(t: TestContex
   const service = createDelivery(db, false, (id, known) => readOrderSnapshot(fixture.stripe, ledgerSettings, id, known), () => now);
   const browser = newToken(), other = newToken();
   const reset = async () => {
-    await db.execute(sql`TRUNCATE commerce_delivery_recovery, commerce_delivery_tickets, commerce_delivery_grants,
+    await db.execute(sql`TRUNCATE commerce_reviews, commerce_delivery_recovery, commerce_delivery_tickets, commerce_delivery_grants,
       commerce_delivery_limits, commerce_entitlements, commerce_disputes, commerce_refunds,
       commerce_order_items, commerce_orders, commerce_webhook_events`);
     fixture = stripeFixture(); now = new Date("2026-10-24T00:00:00Z");
