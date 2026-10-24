@@ -154,6 +154,11 @@ svg { flex-shrink:0; }
 .catalog-search>.mono { color:var(--muted); font-size:10px; }
 .catalog-search input { min-height:46px; padding:11px 14px; border:1px solid #92928e; border-radius:0; background:transparent; color:var(--text); width:100%; font-size:14px; }
 .catalog-search input::placeholder { color:var(--muted); }
+.recovery-form { display:grid; gap:12px; margin-top:24px; }
+.recovery-form label { font-weight:600; }
+.recovery-form input[type="email"] { width:100%; min-width:0; min-height:48px; padding:12px; border:1px solid #92928e; border-radius:0; background:transparent; color:var(--text); font-size:16px; }
+.recovery-form .order-button { margin-top:8px; justify-self:start; }
+.recovery-confirmation { margin-block:24px 36px; }
 .catalog-result-count { color:var(--muted); padding-block:24px; }
 .catalog-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; }
 .catalog-grid:has(>.product-card:only-child) { grid-template-columns:1fr; }

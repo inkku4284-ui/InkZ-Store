@@ -6,6 +6,7 @@ import { business } from "@/lib/site";
 import { deliveryConfig } from "@/lib/delivery/config";
 import { deliveryService } from "@/lib/delivery/runtime";
 import { cookieName } from "@/lib/delivery/security";
+import { recoveryEmailConfig } from "@/lib/delivery/recovery-email";
 
 export async function SecureDownload({ sessionId }: { sessionId: string }) {
   const config = deliveryConfig();
@@ -28,7 +29,7 @@ export async function SecureDownload({ sessionId }: { sessionId: string }) {
       <p>{paid ? "Your payment and download access have been verified. Use this browser to download your framework."
         : state === "pending" ? "Stripe is still confirming your payment. PromptPay can take a moment. Refresh this page shortly."
         : state === "offline" ? "We could not check your access right now. Keep your order page and try again shortly."
-        : "Open this page in the browser you used at checkout. If you changed device or cleared cookies, contact support with your Stripe receipt."}</p>
+        : "Open this page in the browser you used at checkout. Changed device or cleared cookies? Restore access using your purchase email, or contact support with your receipt."}</p>
     </PageIntro>
     <div className="order-layout shell"><section className="order-panel" aria-labelledby="secure-order-heading">
       <Status>{paid ? config?.store.mode === "test" ? "TEST MODE" : "Paid" : state === "pending" ? "Waiting for payment" : "Access verification"}</Status>
@@ -45,7 +46,8 @@ export async function SecureDownload({ sessionId }: { sessionId: string }) {
     </section><aside className="order-context">
       <Notice title="Keep your receipt" marker="Support"><p>Keep the Stripe receipt sent to your purchase email. Add <strong>{business.supportDiscord}</strong> on Discord if you need help restoring access.</p></Notice>
       <p>Sharing this page does not grant another browser access. A completed refund or payment dispute can remove download access.</p>
-      <p>Automatic email recovery is not available in this test release.</p>
+      {recoveryEmailConfig() ? <p><Link href={`/recover?session_id=${encodeURIComponent(sessionId)}`}>Restore access by email</Link></p>
+        : <p>Email recovery is not configured yet. Contact support with your receipt.</p>}
     </aside></div>
   </>;
 }

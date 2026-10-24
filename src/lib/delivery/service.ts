@@ -1,11 +1,12 @@
 import "server-only";
-import { and, eq, gt, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, gt, isNull, sql } from "drizzle-orm";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import * as schema from "../ledger/schema";
 import { createLedger, type SnapshotReader } from "../ledger/ledger";
 import { entitlementFor } from "../ledger/snapshot";
 import { SESSION_ID } from "../store/stripe";
 import { BROWSER_TTL, TICKET_TTL, TOKEN, digest, newToken } from "./security";
+import { normalizeReceiptEmail } from "./email-address";
 
 export function createDelivery<T extends PgQueryResultHKT>(db: PgDatabase<T, typeof schema>,
   live: boolean, readSnapshot: SnapshotReader, clock = () => new Date()) {
@@ -20,13 +21,66 @@ export function createDelivery<T extends PgQueryResultHKT>(db: PgDatabase<T, typ
     return (await source.select({ id: schema.deliveryGrants.id }).from(schema.deliveryGrants)
       .where(grantCondition(id, browser)).limit(1)).length === 1;
   };
+  const saveGrant = async (source: typeof db | Transaction, id: string, browser: string) => {
+    const expiresAt = new Date(clock().getTime() + BROWSER_TTL * 1000);
+    await source.insert(schema.deliveryGrants).values({ live, sessionId: id, browserHash: digest(browser), expiresAt })
+      .onConflictDoUpdate({ target: [schema.deliveryGrants.live, schema.deliveryGrants.sessionId, schema.deliveryGrants.browserHash], set: { expiresAt } });
+  };
   return {
     /** Called only with the Session returned directly by Stripe's create operation. */
     async bindCheckout(id: string, browser: string) {
       if (!validSession(id) || !TOKEN.test(browser)) throw new Error("Invalid purchase binding.");
-      const expiresAt = new Date(clock().getTime() + BROWSER_TTL * 1000);
-      await db.insert(schema.deliveryGrants).values({ live, sessionId: id, browserHash: digest(browser), expiresAt })
-        .onConflictDoUpdate({ target: [schema.deliveryGrants.live, schema.deliveryGrants.sessionId, schema.deliveryGrants.browserHash], set: { expiresAt } });
+      await saveGrant(db, id, browser);
+    },
+    /** Private lookup for customers who lost their order URL. Never return candidates to HTTP clients. */
+    async recoverySessions(address: string) {
+      const email = normalizeReceiptEmail(address);
+      if (!email) return [];
+      const candidates = await db.select({ id: schema.orders.sessionId }).from(schema.orders)
+        .innerJoin(schema.orderItems, eq(schema.orderItems.orderId, schema.orders.id))
+        .innerJoin(schema.entitlements, eq(schema.entitlements.orderItemId, schema.orderItems.id))
+        .where(and(eq(schema.orders.live, live), eq(schema.entitlements.state, "active"),
+          sql`lower(btrim(${schema.orders.email})) = ${email}`))
+        .orderBy(desc(schema.orders.paidAt)).limit(10);
+      return candidates.map(row => row.id);
+    },
+    /** Return a secret only to the trusted server email sender, never to the requesting customer. */
+    async prepareRecovery(id: string, address: string, browser: string) {
+      const email = normalizeReceiptEmail(address);
+      if (!validSession(id) || !email || !TOKEN.test(browser)) return null;
+      return ledger.current(live, id, readSnapshot, async (tx, snapshot) => {
+        if (!snapshot || entitlementFor(snapshot).state !== "active" ||
+          !snapshot.email || normalizeReceiptEmail(snapshot.email) !== email) return null;
+        const token = newToken();
+        await tx.insert(schema.deliveryRecovery).values({ tokenHash: digest(token), live, sessionId: id,
+          browserHash: digest(browser), emailHash: digest(email), expiresAt: new Date(clock().getTime() + 15 * 60_000) });
+        return { token, recipient: snapshot.email.trim() };
+      });
+    },
+    async markRecoverySent(token: string) {
+      if (!TOKEN.test(token)) return false;
+      const changed = await db.update(schema.deliveryRecovery).set({ sent: true }).where(and(
+        eq(schema.deliveryRecovery.tokenHash, digest(token)), eq(schema.deliveryRecovery.live, live),
+        gt(schema.deliveryRecovery.expiresAt, clock()), isNull(schema.deliveryRecovery.consumedAt)))
+        .returning({ id: schema.deliveryRecovery.tokenHash });
+      return changed.length === 1;
+    },
+    async recover(token: string, browser: string) {
+      if (!TOKEN.test(token) || !TOKEN.test(browser)) return null;
+      const match = () => and(eq(schema.deliveryRecovery.tokenHash, digest(token)), eq(schema.deliveryRecovery.live, live),
+        eq(schema.deliveryRecovery.browserHash, digest(browser)), eq(schema.deliveryRecovery.sent, true),
+        gt(schema.deliveryRecovery.expiresAt, clock()), isNull(schema.deliveryRecovery.consumedAt));
+      const [challenge] = await db.select().from(schema.deliveryRecovery).where(match()).limit(1);
+      if (!challenge || !validSession(challenge.sessionId)) return null;
+      return ledger.current(live, challenge.sessionId, readSnapshot, async (tx, snapshot) => {
+        const email = snapshot?.email ? normalizeReceiptEmail(snapshot.email) : null;
+        if (!snapshot || entitlementFor(snapshot).state !== "active" || !email || digest(email) !== challenge.emailHash) return null;
+        const used = await tx.update(schema.deliveryRecovery).set({ consumedAt: clock() }).where(match())
+          .returning({ id: schema.deliveryRecovery.tokenHash });
+        if (!used.length) return null;
+        await saveGrant(tx, challenge.sessionId, browser);
+        return challenge.sessionId;
+      });
     },
     /** Persistent limits across function instances. Store only hashes, never IPs or emails. */
     async allow(key: string, maximum: number, seconds: number) {

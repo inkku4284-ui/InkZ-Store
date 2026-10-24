@@ -22,3 +22,15 @@ test("cancelled checkout says nothing was charged", async ({ page }) => {
   await expect(page.getByText("Payment cancelled. You were not charged.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Launching soon" })).toBeDisabled();
 });
+
+test("recovery page stays private and does not offer email sending without configuration", async ({ page, request }) => {
+  const response = await page.goto("/recover?sent=1");
+  expect(response?.status()).toBe(200);
+  await expect(page.getByRole("heading", { name: "Restore your download." })).toBeVisible();
+  await expect(page.getByText("Email recovery is temporarily unavailable.", { exact: true })).toBeVisible();
+  await expect(page.locator('form[action="/api/delivery/recovery"]')).toHaveCount(0);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, nofollow");
+  expect(response?.headers()["referrer-policy"]).toBe("no-referrer");
+  expect((await request.get("/api/delivery/recovery/confirm?token=not-a-proof")).status()).toBe(405);
+  expect((await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze()).violations).toEqual([]);
+});

@@ -16,8 +16,8 @@ export function deliveryConfig(env: Env = process.env): DeliveryConfig | null {
   const ledger = ledgerConfig(env);
   if (!store || !ledger || env.INKZ_SECURE_DELIVERY !== store.mode || ledger.mode !== store.mode ||
       ledger.key !== store.key || ledger.price !== store.price) return null;
-  // This staged release has no email recovery yet. Never cut existing live buyers
-  // off from their purchases before recovery/backfill has been completed and reviewed.
+  // Recovery currently uses Resend's owner-only test sender. Never cut live buyers
+  // off before a verified sender domain and historical reconciliation are reviewed.
   if (store.mode !== "test") return null;
   return { store, ledger };
 }

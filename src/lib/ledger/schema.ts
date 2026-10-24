@@ -101,3 +101,16 @@ export const deliveryLimits = pgTable("commerce_delivery_limits", {
   hits: integer("hits").notNull(),
   expiresAt: time("expires_at").notNull(),
 }, t => [index("commerce_delivery_limits_expiry").on(t.expiresAt)]);
+
+// Email proof cannot be redeemed until the sending provider accepted the message.
+// It grants access only in the requesting browser, after fresh financial verification.
+export const deliveryRecovery = pgTable("commerce_delivery_recovery", {
+  tokenHash: text("token_hash").primaryKey(),
+  live: boolean("live").notNull(),
+  sessionId: text("stripe_session_id").notNull(),
+  browserHash: text("browser_hash").notNull(),
+  emailHash: text("receipt_email_hash").notNull(),
+  expiresAt: time("expires_at").notNull(),
+  sent: boolean("sent").notNull().default(false),
+  consumedAt: time("consumed_at"),
+}, t => [index("commerce_delivery_recovery_expiry").on(t.expiresAt)]);

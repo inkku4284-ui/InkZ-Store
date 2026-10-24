@@ -21,6 +21,13 @@ const config: NextConfig = {
         { key: "Cache-Control", value: "private, no-store" },
       ],
     }, {
+      source: "/recover",
+      headers: [
+        { key: "Referrer-Policy", value: "no-referrer" },
+        { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        { key: "Cache-Control", value: "private, no-store" },
+      ],
+    }, {
       source: "/api/:path*",
       headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
     }];

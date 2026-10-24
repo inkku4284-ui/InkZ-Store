@@ -15,7 +15,8 @@
     "test:server": "tsx --conditions=react-server --test tests/server/*.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/migrate-ledger.ts",
-    "delivery:prune": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/prune-delivery.ts"
+    "delivery:prune": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/prune-delivery.ts",
+    "orders:reconcile": "node --env-file-if-exists=.env.local --conditions=react-server --import tsx scripts/reconcile-orders.ts"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "5.3.0",

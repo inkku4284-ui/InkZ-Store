@@ -1,44 +1,73 @@
-# PR2: secure guest delivery — Preview evaluation
+# PR2: secure delivery and receipt-email recovery (Preview only)
 
-This draft is stacked on `codex/preview-security-tooling` (PR11), which follows the PR10 order ledger. No merge is needed to test it. It deliberately supports **test mode only**. Unset/off `INKZ_SECURE_DELIVERY` preserves existing checkout/download routes, product data, Stripe Live and PromptPay behavior. Invalid enabled configuration fails closed; it cannot silently fall back to a reusable Session ID.
+Draft PR12 is stacked on PR11, after the PR10 ledger. The secure feature still supports **test mode only**. `INKZ_SECURE_DELIVERY` unset/off preserves existing Production checkout, PromptPay and customer access. Invalid enabled configuration fails closed. No merge, Production deployment or live Stripe change is authorized by this PR.
 
-## Authorization
+## Download authorization
 
-1. A successful checkout response sets a random 256-bit browser credential in a host-only HttpOnly `__Host-inkz_buyer` cookie (Secure, SameSite=Lax, 30 days). Local HTTP uses a different cookie name. Only its SHA-256 digest is stored. The browser must allow cookies.
-2. Only the Session returned directly by Stripe's **create** operation can receive the initial browser grant. Client-supplied Session IDs never create grants. The Stripe idempotency key includes the browser digest, so copying a request UUID cannot attach another browser to the same checkout. A database failure prevents returning the payment URL; retries with the existing browser cookie use the same Stripe key.
-3. Checkout uses the configured canonical origin so the return from Stripe retains that host's cookie. Visiting Buy Now on another deployment alias first returns to the canonical product page; click Buy Now there. Use the PR branch URL throughout testing.
-4. `/download?session_id=...` checks a matching, unexpired browser grant before querying Stripe. It displays no receipt email or payment identifiers. Wrong/missing credentials get a generic purchase-verification screen. This page is dynamic, private/no-store, no-referrer and excluded from indexing.
-5. The native same-origin POST download form mints a random, single-use ticket bound to this browser, Session and test/live scope. Only the ticket hash is stored. A 303 leads to `/api/download?ticket=...`; it expires after 90 seconds. A copied URL in another browser fails, and concurrent redemption has exactly one winner. HEAD returns 405 without consuming anything.
-6. Every issuance and redemption reads current Stripe payment, charge, refunds and disputes and atomically updates the durable ledger. It takes the **same order advisory lock as webhooks**, then verifies entitlement and conditionally consumes the ticket in that transaction. A missing/delayed webhook cannot authorize a fully refunded order. This reconciliation does not fabricate webhook receipt IDs.
-7. No file is decrypted before authorization. The encrypted package stays in `private/`; the decryption key remains server-only. File responses use private/no-store, no-referrer and attachment headers. A file-read failure spends that ticket; the buyer can request another from the order page.
+Checkout stores a random 256-bit host-only HttpOnly buyer cookie (`__Host-inkz_buyer`, Secure, SameSite=Lax, 30 days). Only its SHA-256 digest is persisted. Only the Session returned directly by Stripe's create operation gets the initial grant. Idempotency includes the browser digest so a copied request UUID cannot attach another browser to that checkout.
 
-Full refunds revoke access; partial refunds retain access under the existing ledger policy. Open/unknown disputes suspend, lost disputes revoke, won disputes restore. Unknown product/price/currency/payment relationships fail closed. Stripe/database outages return generic failures and never bypass validation. Files already delivered cannot be retracted. This prevents casual URL sharing; it is not DRM and does not prevent an authorized buyer from copying the file or exporting their browser credential.
+The canonical store origin must be used throughout checkout so Stripe returns to the cookie's host. On another deployment alias, Buy Now first returns to the canonical product page. The order page checks a matching browser grant before looking up Stripe and displays no receipt email or payment identifiers.
 
-## Preview setup and verification
+The same-origin POST download button issues a random, browser-bound, 90-second single-use ticket, stored only as a digest. File delivery conditionally consumes that ticket exactly once, including simultaneous requests. HEAD returns 405. Replaying or copying the URL to another browser is refused.
 
-Use an isolated test database and Stripe Sandbox. Do not connect this Preview to a live database or use live keys. Configure `INKZ_SALES=test`, `INKZ_ORDER_LEDGER=test`, `INKZ_SECURE_DELIVERY=test`, the test Price/key, a valid endpoint signing secret, product file key and `DATABASE_URL` with verified TLS. Keep all secrets out of source, screenshots and logs.
+Every issuance and redemption reconciles current Stripe payment, charge, refunds and disputes under the same transaction-scoped order advisory lock used by webhooks. The ledger update and capability consumption commit together; read reconciliation creates no synthetic webhook events. Full refunds revoke; partial refunds retain access under the existing policy; open/unknown disputes suspend, lost disputes revoke, won disputes restore. Outages and unrecognized financial relationships fail closed.
 
-Review/apply committed migrations explicitly with `npm.cmd run db:migrate -- --confirm-host=<test database hostname>`. Migration is never part of the build. The existing test ledger endpoint may continue to ingest the same account's test events; read reconciliation also handles an order before its webhook arrives. Separate endpoint signing secrets are required if registering an additional Stripe webhook endpoint.
+The encrypted package remains in `private/` and is decrypted only after authorization. Responses are private/no-store, no-referrer and noindex, with attachment headers for files. A failed file read spends that ticket; the buyer can request another. Files already delivered cannot be retracted, and this is not DRM against an authorized buyer copying the product or exporting browser credentials.
 
-Test a new Sandbox purchase in the canonical Preview origin. Old test Sessions without a browser grant intentionally do not unlock. Check pending PromptPay, then authorize the **test** simulator payment and download. Copy the order URL and generated file URL to a separate browser profile; both must deny access. Reuse the file URL in the original profile: it must deny the second transfer. Request a new file URL, fully refund that Sandbox payment, then try it: it must deny even if webhook delivery is delayed. Check the private ledger against Stripe; never post customer emails, credentials or payment IDs as public evidence.
+## Email recovery
 
-Automated cases run against migrated PGlite locally and a disposable pooled PostgreSQL service in CI. The same suite covers financial reconciliation, concurrent redemption, different browsers, expiry, refunds/disputes, durable limits, HTTP issuance/delivery, private headers and no decryption on denial. SDK transports are fixtures in automated tests, not real revenue/analytics. Hosted tests must be reported separately.
+Customers can use `/recover` without registration, or follow Restore access by email on an order page. They supply the Stripe receipt address. An order URL can locate an older purchase not yet recorded in the ledger. Without a URL, the server privately searches up to ten recently paid, active ledger orders for that address, then verifies current Stripe state. No candidates or lookup results are returned publicly.
 
-## Limits, retention and cost
+The request requires a bounded same-origin POST. The generic redirect is returned before lookup and sending, using Next `after()` to finish the work after the response on Vercel. Known and unknown purchases receive the same response. The only destination is the email freshly verified on the Stripe purchase, never an arbitrary form-supplied destination.
 
-Checkout keeps the existing best-effort in-memory limits and adds durable per-IP/global limits in secure mode (6/60 per minute). Status uses 30/300, ticket issuance and file delivery 20/300. Hash-only limit keys and counters live in PostgreSQL across function instances. Global limits bound Stripe traffic; these controls do not replace Vercel's platform protections. A shared IP can exhaust its allowance. Untrusted hosting proxies must sanitize forwarded-IP headers before reusing this implementation outside Vercel.
+A random 256-bit proof is stored as a hash with the receipt-address hash, browser hash, mode, Session and a 15-minute expiry. It stays unusable until Resend accepts the message. The email link places the proof in a **URL fragment**, which is not transmitted in HTTP requests or referrers. Opening it, including by an email scanner, does not consume it. The customer must press Confirm this browser, causing a same-origin POST with the proof and requesting browser's HttpOnly cookie.
 
-Grants expire after 30 days, tickets after 90 seconds, and rate-limit windows after a minute. There are expiry indexes. Run `npm.cmd run delivery:prune` as a dry run, then add `-- --apply --confirm-host=<test hostname>` to remove expired capability/rate-limit rows. It never deletes orders, refunds, disputes or event receipts. No scheduled Production job is installed by this PR.
+Confirmation takes the order lock, rechecks current payment/refund/dispute state and the current receipt address, conditionally consumes the proof once and renews the browser grant for 30 days. A wrong browser, expired or reused proof, unsent message, changed receipt address, refund, dispute or unavailable Stripe/database cannot bypass those checks. Other legitimate devices keep their own grants.
 
-No new paid service is required for the browser-bound flow. It uses the existing Neon Free test database and Preview functions; ordinary provider quotas still apply. Current email recommendation: **Resend Free**, discovered through Vercel Marketplace. Its CLI lists the free plan at $0 and requires an owned sending domain. The owner has no domain and explicitly chose testing first. **No Resend resource, paid plan, domain purchase or customer email sending has been activated.** Resend's hosted testing sender is restricted and is not a substitute for verified customer delivery. Review current limits at [Resend pricing](https://resend.com/pricing) before provisioning; leave paid overages disabled.
+The Resend adapter uses the documented HTTPS API with timeouts, no redirects, idempotency keys and plain-text messages. Provider bodies, keys, proof tokens and customer details are not logged by application code.
 
-## Blocking live rollout: recovery and historical customer access
+## Free test sender and configuration
 
-Automatic email recovery is **not implemented or connected in this draft**. The UI says so and retains receipt-based support instructions. Cookie deletion, another device/browser, and a 30-day expiry require recovery. Existing live customers continue through the unchanged legacy path while secure delivery is off. Enabling `INKZ_SECURE_DELIVERY=live` is explicitly refused in this version; do not remove that guard until the following are completed and approved:
+The owner provisioned a Resend account and API key directly for testing, because Marketplace provisioning requires an owned sender domain and none is available yet. A real connection-test email was accepted by Resend. This is an actual provider connection, not a console-email fallback.
 
-- Provision Resend Free with an owned, DNS-verified sender domain. Disable link/open tracking for authentication emails, use a narrowly scoped server-only sending key, and verify delivery to a controlled inbox.
-- Implement purchase-linked recovery: verify the actual Stripe receipt address, send only to that verified address, use short-lived hashed single-use tokens bound to the requesting browser, confirm with POST rather than consuming on GET, and apply persistent IP/order/recipient/global send limits. Never echo lookup results, email addresses or payment identifiers publicly.
-- Reconcile/backfill historical purchases with an explicit approved historical price/version map and a dry-run report. Recovery must work for old receipts and different devices, with full-refund/dispute checks at redemption. No bearer Session-ID fallback may remain once live cutover is approved.
-- Complete hosted Sandbox security checks, approve the separate live configuration/cutover, and update public delivery/privacy terms to match the finished workflow.
+Resend's `onboarding@resend.dev` sender can send only to the account owner's address. This is enforced before transmission. This version consequently refuses arbitrary customer destinations and live secure delivery. It needs no purchased domain or paid email plan for owner-only tests. Leave paid overages disabled; consult [Resend pricing](https://resend.com/pricing) and its [test sender restriction](https://resend.com/docs/knowledge-base/403-error-resend-dev-domain) before wider activation.
 
-This draft is reviewable test code, **not a claim that the full commerce platform or live security rollout is finished**. There is no admin dashboard, review system, storefront redesign, automatic merge or Production deployment in this PR.
+On **the PR2 Preview branch only**, keep the existing matching store/ledger test configuration and set:
+
+- `INKZ_SECURE_DELIVERY=test`
+- `INKZ_RECOVERY_EMAIL=test`
+- `RESEND_API_KEY` as a server-only Secret
+- `INKZ_RECOVERY_TEST_EMAIL` as a private Secret: the Resend account owner address, which must also be used for the Sandbox purchase
+
+The API key and owner address belong in ignored local files and Preview Secrets, never `NEXT_PUBLIC_*`, source, screenshots or chat. Public pages do not reveal the owner address. With missing email configuration, recovery is unavailable and existing delivery behavior is preserved.
+
+Apply committed migrations explicitly with `npm.cmd run db:migrate -- --confirm-host=<test hostname>`. Builds never migrate. Keep Preview databases/keys separate from Production. Existing test webhook ingestion can continue on the same isolated test ledger; separate webhook endpoints require their own signing secrets.
+
+## Historical customers
+
+An old, current-price purchase can recover from its old order URL after proving its receipt email, even without an existing browser grant. For email-only recovery after losing the URL, first reconcile the customer's historical purchase into the ledger.
+
+`npm.cmd run orders:reconcile -- --from=YYYY-MM-DD --to=YYYY-MM-DD` is a **dry run** by default. Dates are UTC, `--to` exclusive, each window at most 31 days. Each run stops after 500 Sessions and reports truncation. Output contains aggregate counts only, no receipt addresses, payment identifiers or credentials. Calls to Stripe are read-only.
+
+After reviewing the dry run and verifying the database host, add `--apply --confirm-host=<hostname>`. Apply reconciles financial snapshots and immutable items; it does not create browser grants or webhook receipts. Repeat safely with narrower windows if truncated, and resolve unrecognized records/errors before cutover. A run with any unresolved records/errors or truncation exits unsuccessfully.
+
+Historical Price IDs must be explicitly approved with repeatable `--legacy-price=price_...` flags (maximum five). They must still match Combat Framework v1.0, quantity one, THB349 before discounts and verified financial relationships. Already-recorded immutable item snapshots work without that import allowlist afterward. This does not silently accept arbitrary historical products, prices, amounts or versions. No live historical backfill has been performed by this work.
+
+## Limits and retention
+
+Persistent hash-keyed PostgreSQL limits supplement the existing checkout limits. Secure checkout: 6 per IP/60 globally per minute. Status: 30/300. Ticket issuance and file delivery: 20/300. Recovery requests: 6 per IP per 15 minutes and 300 globally per minute. Email attempts: 3 per recipient/order per hour, with an application send budget of 80 per 24-hour window. Confirmation: 10 per IP/browser per 15 minutes. Shared IPs can exhaust their allowance. These controls do not replace platform protections; forwarded IPs must be sanitized by the host.
+
+Grants expire at 30 days, file tickets at 90 seconds, proofs at 15 minutes, and counters after their own windows. Expiry indexes support explicit cleanup. `npm.cmd run delivery:prune` is a dry run; add `-- --apply --confirm-host=<test hostname>` to remove expired capability/rate-limit rows. It does not delete orders, adjustments or webhook receipts. No scheduled Production task is installed.
+
+## Verification and live-rollout gates
+
+Automated suites use migrated PGlite and the same cases against disposable pooled PostgreSQL in CI. They cover browser binding, concurrent single redemption, refunds/disputes, expiry, pending payments, outages, email dispatch acceptance, changed addresses, generic HTTP outcomes, old orders and dry-run/approved-price reconciliation. Fixture transports are test data, not real sales or analytics. Desktop/mobile browser tests cover the recovery page, accessibility and closed configuration.
+
+Before calling live rollout ready:
+
+1. Verify a real owner-address Sandbox purchase, new-browser email recovery and the resulting file download on Preview. Also verify expired/replayed links and a refund after sending. Provider acceptance alone is not proof of inbox delivery or full recovery.
+2. Verify an owned sender domain, disable authentication-email tracking, scope the sending credential, remove the owner-only restriction through reviewed production configuration and test delivery to a controlled customer inbox.
+3. Review all historical price/version mappings and reconcile live historical records without unresolved errors or truncation. Confirm recovery for old customers and different devices.
+4. Recheck CI/security review, update delivery/privacy terms, obtain explicit merge and Production/cutover approval, and use separate live secrets/database.
+
+The test-only guard remains intentional. There is no admin dashboard, customer review system or public storefront redesign in this PR.
