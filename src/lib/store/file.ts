@@ -19,6 +19,7 @@ export function decryptPackage(encrypted: Buffer, key: Buffer): Buffer {
 }
 
 export async function productFile(key: Buffer): Promise<Buffer> {
-  const encrypted = await readFile(path.join(process.cwd(), COMBAT_SALE.encryptedFile));
+  // Keep tracing scoped to the private assets, rather than pulling the whole project/test DB into this function.
+  const encrypted = await readFile(path.join(process.cwd(), "private", path.basename(COMBAT_SALE.encryptedFile)));
   return decryptPackage(encrypted, key);
 }

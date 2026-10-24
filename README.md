@@ -1,5 +1,9 @@
 # INKZ®
 
+## Commerce ledger foundation
+
+An opt-in PostgreSQL order ledger and signed Stripe webhook handler are now available. They run in shadow mode and do not change the existing checkout or download authorization. See [setup, event subscriptions, tests, limitations, and staged cutover](./docs/COMMERCE_LEDGER.md). Hosted provisioning and live activation require separate approval; builds never apply database migrations.
+
 The public website for an independent software label making Roblox development tools. Next.js App Router, strict TypeScript, Tailwind CSS, and self-hosted Space Grotesk, Inter, and IBM Plex Mono. A separately gated Stripe Sandbox integration is included. No live payments, fulfillment, or paid framework source is included.
 
 ## Development
