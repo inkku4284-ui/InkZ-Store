@@ -7,7 +7,7 @@
 .owner-notice{padding:16px 0;color:var(--muted)!important}
 .owner-button,.owner-text-button{font:inherit;cursor:pointer}.owner-button{display:inline-flex;gap:32px;align-items:center;padding:15px 22px;background:#ece9e2;color:#111;border:0;border-radius:3px;font-weight:600}.owner-button:hover{background:white}
 .owner-text-button{background:transparent;color:var(--text);border:1px solid var(--subtle);border-radius:3px;padding:9px 14px}.owner-text-button:hover{border-color:#d4d0c9}
-.owner-studio :is(button,a,select):focus-visible{outline:2px solid #e96c65;outline-offset:5px}
+.owner-studio :is(button,a,select,[tabindex]):focus-visible{outline:2px solid var(--focus);outline-offset:5px}
 .owner-heading,.owner-section-heading{display:flex;justify-content:space-between;align-items:center;gap:24px}.owner-heading>form{flex-shrink:0}
 .owner-nav{display:flex;gap:30px;padding:32px 0;margin-bottom:46px;border-bottom:1px solid var(--steel)}.owner-nav a{font-size:.9rem;color:var(--muted)}.owner-nav a[aria-current]{color:var(--text)}
 .owner-range{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.8rem}.owner-range label{width:100%;color:var(--muted)}.owner-range select{color:var(--text);background:var(--panel);border:1px solid var(--subtle);padding:9px 10px;font:inherit;border-radius:3px}
