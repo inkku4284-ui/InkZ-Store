@@ -24,7 +24,7 @@ export default async function OwnerDashboard({ searchParams }: { searchParams: P
       <h1>Store overview.</h1><p>Captured payments and their current adjustments, directly from the order ledger.</p></div>
       <form action="/api/admin/auth/logout" method="post"><button className="owner-text-button" type="submit">Sign out</button></form>
     </header>
-    <nav className="owner-nav" aria-label="Owner workspace"><Link href="/admin" aria-current="page">Overview</Link></nav>
+    <nav className="owner-nav" aria-label="Owner workspace"><Link href="/admin" aria-current="page">Overview</Link><Link href="/admin/reviews">Review moderation</Link></nav>
     <section aria-labelledby="sales-title">
       <div className="owner-section-heading"><div><p className="owner-kicker">Commerce</p><h2 id="sales-title">Sales & revenue</h2></div>
         <form className="owner-range" action="/admin" method="get"><label htmlFor="report-period">Reporting window</label>

@@ -1,0 +1,5 @@
+.owner-review-list { display:grid; gap:36px; margin-top:28px; }
+.owner-review { border-top:1px solid var(--steel); padding-top:28px; }
+.owner-review h2 { margin-block:12px; font-size:24px; }
+.owner-review-body { white-space:pre-wrap; overflow-wrap:anywhere; max-width:75ch; line-height:1.75; }
+.owner-review form { display:flex; flex-wrap:wrap; gap:16px; margin-top:20px; }

@@ -21,7 +21,7 @@ async function exerciseLedger<T extends PgQueryResultHKT>(t: TestContext, db: Pg
   let sequence = 0;
   const nextEvent = (type = "checkout.session.completed") => ({ id: `evt_integration_${++sequence}`, type, live: false });
   const reset = async () => {
-    await db.execute(sql`TRUNCATE commerce_entitlements, commerce_disputes, commerce_refunds, commerce_order_items, commerce_orders, commerce_webhook_events`);
+    await db.execute(sql`TRUNCATE commerce_reviews, commerce_entitlements, commerce_disputes, commerce_refunds, commerce_order_items, commerce_orders, commerce_webhook_events`);
   };
   const record = (f: ReturnType<typeof stripeFixture>, event = nextEvent()) => ledger.record(event, sessionId,
     (id, known) => readOrderSnapshot(f.stripe, ledgerSettings, id, known));

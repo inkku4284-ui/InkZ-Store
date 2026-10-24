@@ -29,6 +29,13 @@
       "when": 1792846000000,
       "tag": "0003_owner_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792847000000,
+      "tag": "0004_verified_reviews",
+      "breakpoints": true
     }
   ]
 }
