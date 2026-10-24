@@ -12,7 +12,7 @@ The same-origin POST download button issues a random, browser-bound, 90-second s
 
 Every issuance and redemption reconciles current Stripe payment, charge, refunds and disputes under the same transaction-scoped order advisory lock used by webhooks. The ledger update and capability consumption commit together; read reconciliation creates no synthetic webhook events. Full refunds revoke; partial refunds retain access under the existing policy; open/unknown disputes suspend, lost disputes revoke, won disputes restore. Outages and unrecognized financial relationships fail closed.
 
-The encrypted package remains in `private/` and is decrypted only after authorization. Responses are private/no-store, no-referrer and noindex, with attachment headers for files. A failed file read spends that ticket; the buyer can request another. Files already delivered cannot be retracted, and this is not DRM against an authorized buyer copying the product or exporting browser credentials.
+The encrypted package remains in `private/` and is decrypted only after authorization. Responses are private/no-store and noindex, with attachment headers for files. API/file responses use no-referrer. Order/recovery HTML uses same-origin referrer policy, which sends no Referer outside the store and preserves the Origin required by native same-origin POST forms. A failed file read spends that ticket; the buyer can request another. Files already delivered cannot be retracted, and this is not DRM against an authorized buyer copying the product or exporting browser credentials.
 
 ## Email recovery
 

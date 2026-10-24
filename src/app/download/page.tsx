@@ -9,7 +9,7 @@ import { deliveryEnabled } from "@/lib/delivery/config";
 import { SecureDownload } from "@/components/secure-download";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Your download", robots: { index: false, follow: false }, referrer: "no-referrer" };
+export const metadata: Metadata = { title: "Your download", robots: { index: false, follow: false }, referrer: "same-origin" };
 
 export default async function Download({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
