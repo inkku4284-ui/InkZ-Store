@@ -8,6 +8,20 @@
       "when": 1792622246298,
       "tag": "0000_commerce_ledger",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792645744404,
+      "tag": "0001_secure_delivery",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792819727622,
+      "tag": "0002_email_recovery",
+      "breakpoints": true
     }
   ]
 }

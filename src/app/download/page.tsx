@@ -5,13 +5,16 @@ import { combat } from "@/lib/products";
 import { business } from "@/lib/site";
 import { storeConfig, COMBAT_SALE } from "@/lib/store/config";
 import { orderFor, stripeClient, type Order } from "@/lib/store/stripe";
+import { deliveryEnabled } from "@/lib/delivery/config";
+import { SecureDownload } from "@/components/secure-download";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Your download", robots: { index: false, follow: false }, referrer: "no-referrer" };
+export const metadata: Metadata = { title: "Your download", robots: { index: false, follow: false }, referrer: "same-origin" };
 
 export default async function Download({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams;
   const sessionId = typeof params.session_id === "string" ? params.session_id : "";
+  if (deliveryEnabled()) return <SecureDownload sessionId={sessionId} />;
   const config = storeConfig();
   const order: Order = config && sessionId ? await orderFor(stripeClient(config), config, sessionId) : { state: "invalid" };
   const href = `/api/download?session_id=${encodeURIComponent(sessionId)}`;

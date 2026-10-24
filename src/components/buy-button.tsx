@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Status } from "./ui";
 
-type Store = { open: boolean; mode: "test" | "live" | null };
+type Store = { open: boolean; mode: "test" | "live" | null; checkoutOrigin?: string };
 
 /**
  * The purchase block of the product page. The page itself stays static; whether buying is open is asked from
@@ -46,7 +46,13 @@ export function PurchasePanel({ price, availability, delivery }: { price: string
       const result = await response.json();
       if (!response.ok || typeof result.url !== "string") throw new Error("Checkout unavailable");
       const url = new URL(result.url);
-      if (url.origin !== "https://checkout.stripe.com") throw new Error("Invalid destination");
+      // Only the canonical origin advertised by /api/store may receive an
+      // explicit store redirect. Ordinary payment links remain Stripe-only.
+      const local = ["localhost", "127.0.0.1", "[::1]"].includes(url.hostname);
+      const canonicalStore = url.origin === store.checkoutOrigin && url.pathname === "/products/combat-framework" &&
+        !url.search && !url.hash && (url.protocol === "https:" || (url.protocol === "http:" && local));
+      if (url.username || url.password || (result.destination === "store"
+        ? !canonicalStore : url.origin !== "https://checkout.stripe.com")) throw new Error("Invalid destination");
       window.location.assign(url.href);
     } catch {
       setError("Checkout could not open. Please wait a moment and try again.");

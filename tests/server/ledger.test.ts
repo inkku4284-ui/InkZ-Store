@@ -13,6 +13,8 @@ import { readOrderSnapshot, sessionForEvent } from "../../src/lib/ledger/snapsho
 import * as schema from "../../src/lib/ledger/schema";
 import { stripeFixture, ledgerSettings, sessionId, chargeId, created } from "./ledger-fixtures";
 import type Stripe from "stripe";
+import { exerciseDelivery } from "./delivery-cases";
+import { exerciseRecovery } from "./recovery-cases";
 
 async function exerciseLedger<T extends PgQueryResultHKT>(t: TestContext, db: PgDatabase<T, typeof schema>) {
   const ledger = createLedger(db);
@@ -224,6 +226,8 @@ test("PostgreSQL ledger integration (embedded PGlite)", async t => {
     // A repeated migration run must be safe.
     await migratePglite(db, { migrationsFolder: "./drizzle" });
     await exerciseLedger(t, db);
+    await exerciseDelivery(t, db);
+    await exerciseRecovery(t, db);
   } finally {
     await client.close();
   }
@@ -238,6 +242,8 @@ test("PostgreSQL ledger integration (pooled server / CI)", { skip: !postgresUrl 
   try {
     await migratePostgres(connection.db, { migrationsFolder: "./drizzle" });
     await exerciseLedger(t, connection.db);
+    await exerciseDelivery(t, connection.db);
+    await exerciseRecovery(t, connection.db);
   } finally {
     await connection.close();
   }

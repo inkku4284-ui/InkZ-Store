@@ -21,7 +21,8 @@ export async function verifiedPrice(stripe: Stripe, config: StoreConfig) {
   return assertPrice(await stripe.prices.retrieve(config.price, { expand: ["product"] }), config);
 }
 
-export async function createCheckout(stripe: Stripe, config: StoreConfig, idempotencyKey: string) {
+export async function createCheckout(stripe: Stripe, config: StoreConfig, idempotencyKey: string,
+  delivery?: { browserHash: string; created: (id: string) => Promise<void> }) {
   await verifiedPrice(stripe, config);
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -33,13 +34,20 @@ export async function createCheckout(stripe: Stripe, config: StoreConfig, idempo
     locale: "auto",
     metadata: { product: COMBAT_SALE.slug, version: COMBAT_SALE.version },
     payment_intent_data: { description: `INKZ Combat Framework v${COMBAT_SALE.version}`, metadata: { product: COMBAT_SALE.slug } },
-    custom_text: { submit: { message: "After paying you go straight to your download page. Bookmark it: it is your download link. / จ่ายเสร็จจะไปหน้าดาวน์โหลดทันที บุ๊กมาร์กหน้านั้นไว้ เป็นลิงก์ดาวน์โหลดของคุณ" } },
+    custom_text: { submit: { message: delivery
+      ? "After paying, download in this browser. Keep your Stripe receipt for support if you change device. / จ่ายเสร็จดาวน์โหลดในเบราว์เซอร์นี้ เก็บใบเสร็จ Stripe ไว้หากเปลี่ยนเครื่อง"
+      : "After paying you go straight to your download page. Bookmark it: it is your download link. / จ่ายเสร็จจะไปหน้าดาวน์โหลดทันที บุ๊กมาร์กหน้านั้นไว้ เป็นลิงก์ดาวน์โหลดของคุณ" } },
     success_url: `${config.origin}/download?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${config.origin}/products/combat-framework?checkout=cancelled`,
-  }, { idempotencyKey: `inkz-combat-${idempotencyKey}` });
+  // A copied client request UUID cannot attach another browser to the same Checkout.
+  }, { idempotencyKey: `inkz-combat-${idempotencyKey}${delivery ? `-${delivery.browserHash}` : ""}` });
   if (session.livemode !== (config.mode === "live") || session.mode !== "payment" || !session.url) throw new Error("Invalid Session");
   const url = new URL(session.url);
   if (url.origin !== "https://checkout.stripe.com" || url.username || url.password) throw new Error("Invalid Checkout URL");
+  if (delivery) {
+    if (!SESSION_ID.test(session.id)) throw new Error("Invalid Session");
+    await delivery.created(session.id);
+  }
   return session.url;
 }
 
