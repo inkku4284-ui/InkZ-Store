@@ -218,7 +218,6 @@ export function mountArtifact(host: HTMLElement, options: Options): ArtifactCont
     preference.removeEventListener("change", preferenceChanged);
     if (model) { sculpture.remove(model); disposeModel(model,sourceCoreMaterial ? [sourceCoreMaterial] : []); model = null; sourceCoreMaterial = null; }
     rings = []; scene.environment = null; environment?.dispose(); environment = null; coreEnvironment?.dispose(); coreEnvironment = null; scene.clear(); renderer.dispose();
-    if (!renderer.getContext().isContextLost()) renderer.forceContextLoss();
     canvas.remove();
   }
   return { setPaused: value => { paused=value; sync(); }, setInspected: value => { inspectTarget=value ? 1 : 0; sync(true); }, dispose };

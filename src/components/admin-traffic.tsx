@@ -24,13 +24,13 @@ export async function AdminTraffic({ since, until, granularity = "day", paidOrde
       : <><p>{rate.toFixed(2)} recorded paid orders per 100 measured visitors.</p><p>This aggregate ratio uses the same reporting window. It is not a percentage of identified customers: visitor identifiers rotate daily, analytics can be blocked, repeat purchases can increase the ratio, and unreconciled historical orders reduce sales coverage.</p></>}
     <p>Anonymous visitor identifiers rotate daily. These counts cannot identify distinct customers across days. Blocked analytics requests are not recorded.</p>
     <h3>Traffic by page</h3>
-    {report.pages.length ? <div className="owner-table-wrap"><table><caption>Top 50 page paths; any remaining paths are grouped as Others</caption>
+    {report.pages.length ? <div className="owner-table-wrap" role="region" aria-label="Traffic by page table" tabIndex={0}><table><caption>Top 50 page paths; any remaining paths are grouped as Others</caption>
       <thead><tr><th scope="col">Page</th><th scope="col">Page views</th><th scope="col">Visitors</th></tr></thead>
       <tbody>{report.pages.map(row => <tr key={row.path}><th scope="row">{row.path}</th><td>{number(row.pageviews)}</td><td>{number(row.visitors)}</td></tr>)}</tbody>
     </table></div> : <p>No page data recorded for this period.</p>}
     <h3>{granularity === "day" ? "Daily" : granularity === "week" ? "Weekly" : "Monthly"} traffic</h3>
     <p>Calendar buckets use the provider&apos;s UTC time boundaries and may include the full boundary week or month.</p>
-    {report.trend.length ? <div className="owner-table-wrap"><table><caption>Recorded traffic by {granularity}; missing buckets are not invented</caption>
+    {report.trend.length ? <div className="owner-table-wrap" role="region" aria-label="Traffic trend table" tabIndex={0}><table><caption>Recorded traffic by {granularity}; missing buckets are not invented</caption>
       <thead><tr><th scope="col">Bucket start (UTC)</th><th scope="col">Page views</th><th scope="col">Visitors</th></tr></thead>
       <tbody>{report.trend.map(row => <tr key={row.timestamp}><th scope="row">{row.timestamp.slice(0, 10)}</th><td>{number(row.pageviews)}</td><td>{number(row.visitors)}</td></tr>)}</tbody>
     </table></div> : <p>No time buckets recorded for this period.</p>}
