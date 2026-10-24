@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getAdminContext, requireOwner } from "@/lib/admin/auth";
 import { salesMetrics, salesRange } from "@/lib/admin/metrics";
+import { AdminTraffic } from "@/components/admin-traffic";
 
 const money = (minor: number) => new Intl.NumberFormat("en-US", { style: "currency", currency: "THB" }).format(minor / 100);
 
@@ -48,7 +49,6 @@ export default async function OwnerDashboard({ searchParams }: { searchParams: P
         <tbody>{metrics.trend.length ? metrics.trend.map(point => <tr key={point.period}><th scope="row">{point.period}</th><td>{point.sales}</td><td>{money(point.grossMinor)}</td><td>{money(point.refundedMinor)}</td><td>{money(point.netMinor)}</td></tr>)
           : <tr><td colSpan={5}>No paid purchases in this reporting window.</td></tr>}</tbody></table></div>
     </section>
-    <section className="owner-traffic" aria-labelledby="traffic-title"><p className="owner-kicker">Audience</p><h2 id="traffic-title">Traffic & conversion</h2>
-      <p>Visitor and page-view reporting is unavailable until the analytics connection is configured. Purchase conversion cannot be calculated without a measured visitor count.</p></section>
+    <AdminTraffic since={range.from} until={new Date(range.to.getTime() - 1)} granularity={range.interval} paidOrders={metrics.totals.orders} live={context.config.live}/>
   </>;
 }
